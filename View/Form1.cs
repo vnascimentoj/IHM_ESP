@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Drawing;
+using System.IO.Ports;
 using System.Windows.Forms;
 using System.Windows.Forms.DataVisualization.Charting;
 
@@ -16,7 +17,9 @@ namespace IHM_ESP
             InitializeMenu();
             InitializeTextBox();
 
-            comm = new ESPComm("COM13", 115200);
+            foreach (var port in SerialPort.GetPortNames())
+                comboBox1.Items.Add(port);
+
         }
 
         private void InitializeMenu()
@@ -121,14 +124,14 @@ namespace IHM_ESP
         {
             //Envia dados pela serial
             int value = Convert.ToInt16(textBox_speed.Text);
-            //comm.SetRPM(value);
+            comm.SetRPM(value);
         }
 
         private void btn_set_pwm_Click(object sender, EventArgs e)
         {
             //Envia dados pela serial
             int value = Convert.ToInt16(textBox_pwm.Text);
-            //comm.SetPWM(value);
+            comm.SetPWM(value);
         }
 
         private void chart_speed_Click(object sender, EventArgs e)
@@ -136,6 +139,7 @@ namespace IHM_ESP
             
         }
 
+        // Função está adicionando em todos os gráficos para testes
         public void AddSpeedData(double[] data)
         {
             foreach(var value in data)
@@ -195,6 +199,28 @@ namespace IHM_ESP
                         //}
                     }
                 }
+            }
+        }
+
+        private void btn_connect_Click(object sender, EventArgs e)
+        {
+            string comPort = comboBox1.SelectedItem.ToString();
+            comm = new ESPComm(comPort, 115200);
+        }
+
+        bool start = false;
+        private void btn_start_Click(object sender, EventArgs e)
+        {
+            start = !start;
+            if(start)
+            {
+                btn_start.Text = "Iniciar";
+                comm.Start();
+            }
+            else
+            {
+                btn_start.Text = "Parar";
+                comm.Stop();
             }
         }
     }

@@ -10,24 +10,28 @@ namespace IHM_ESP
 {
     public class ESPComm : IComm
     {
+        const int MAX_PWM = 1023;
         SerialPort serialPort;
         public delegate void MessageReceivedEventHandler(byte[] message);
         Dictionary<int, MessageReceivedEventHandler> onMessageReceived;
+        Dictionary<int, Type> codeMessagePair = new Dictionary<int, Type>();
 
         public ESPComm(string comPort, int baudRate)
         {
             serialPort = new SerialPort(comPort, baudRate);
             serialPort.DataReceived += serialPort_DataReceived;
             onMessageReceived = new Dictionary<int, MessageReceivedEventHandler>();
-            //onMessageReceived[new SetPMessage().code] = (b) => Debug.WriteLine("Era pra fazer algo aqui");
+
+            serialPort.Open();
 
             checkDuplicateMessageCodes();
+            printAllMessages();
         }
 
         private void checkDuplicateMessageCodes()
         {
             Type[] types = GetInheritedClasses(typeof(Message));
-            Dictionary<int, Type> codeMessagePair = new Dictionary<int, Type>();
+            
             foreach(var type in types)
             {
                 Message instance = (Message)Activator.CreateInstance(type);
@@ -37,8 +41,16 @@ namespace IHM_ESP
                              " compartilham o mesmo código (" + instance.code.ToString() + ")");
 
 
-                codeMessagePair[instance.code] = type;
-                
+                codeMessagePair[instance.code] = type;                
+            }
+        }
+
+        public void printAllMessages()
+        {            
+            //foreach(var item in codeMessagePair)
+            foreach(var item in codeMessagePair.ToArray().OrderBy(i => i.Key))
+            {
+                Debug.WriteLine("Código: {0}\tMensagem {1}", item.Key, item.Value);
             }
         }
 
@@ -91,27 +103,32 @@ namespace IHM_ESP
 
         public override void SetPWM(double duty)
         {
-            throw new NotImplementedException();
+            if (duty < 0 || duty > 1)
+                throw new Exception("duty: " + duty.ToString() + " está fora do intervalo: 0 <= duty <= 1");
+
+            int value = Convert.ToInt32(Math.Round(duty * MAX_PWM));
+            SetPwmMessage setPwmMessage = new SetPwmMessage(BitConverter.GetBytes(value));
+            sendMessage(setPwmMessage);
         }
 
         public override void SetPWM(int duty)
         {
-            throw new NotImplementedException();
+            SetPWM(Convert.ToDouble(duty) / 100);
         }
 
         public override void SetRPM(int rpm)
         {
-            throw new NotImplementedException();
+            sendMessage(new SetRpmMessage(rpm));
         }
 
         public override void Start()
         {
-            throw new NotImplementedException();
+            sendMessage(new StartMessage());
         }
 
         public override void Stop()
         {
-            throw new NotImplementedException();
+            sendMessage(new StopMessage());
         }
 
         protected void sendMessage(Message message)
@@ -124,22 +141,24 @@ namespace IHM_ESP
 
         public override void SetMaxPwm(int duty)
         {
-            throw new NotImplementedException();
+            sendMessage(new SetMaxPwmMessage(duty));
         }
 
         public override void SetMaxPwm(double duty)
         {
-            throw new NotImplementedException();
+            int value = Convert.ToInt32(Math.Round(duty * MAX_PWM));
+            SetMaxPwm(value);
         }
 
         public override void SetMinPwm(int duty)
         {
-            throw new NotImplementedException();
+            sendMessage(new SetMinPwmMessage(duty));
         }
 
         public override void SetMinPwm(double duty)
         {
-            throw new NotImplementedException();
+            int value = Convert.ToInt32(Math.Round(duty * MAX_PWM));
+            SetMinPwm(value);
         }
 
         public override void SetMaxCurrent(double current)
@@ -169,7 +188,19 @@ namespace IHM_ESP
 
         public override double GetCurrent()
         {
-            throw new NotImplementedException();
+            bool ready = false;
+            int value = -1;
+            GetCurrentMessage getCurrentMessage = new GetCurrentMessage();
+            getCurrentMessage.OnMessageReceived += (msg) =>
+            {
+                ready = true;
+                //value = Convert.ToInt32(new ArraySegment<byte>(msg.data, 1, 4));
+                value = BitConverter.ToInt32(new ArraySegment<byte> (msg.data, 1, 4).ToArray(), 0);
+            };
+            sendMessage(getCurrentMessage);
+            System.Threading.SpinWait.SpinUntil(() => ready, 100);
+
+            return value;
         }
 
         public override double GetMaxPwm()

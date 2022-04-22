@@ -30,15 +30,15 @@ namespace IHM_ESP
         private void InitializeComponent()
         {
             this.components = new System.ComponentModel.Container();
-            System.Windows.Forms.DataVisualization.Charting.ChartArea chartArea1 = new System.Windows.Forms.DataVisualization.Charting.ChartArea();
-            System.Windows.Forms.DataVisualization.Charting.Legend legend1 = new System.Windows.Forms.DataVisualization.Charting.Legend();
-            System.Windows.Forms.DataVisualization.Charting.Series series1 = new System.Windows.Forms.DataVisualization.Charting.Series();
-            System.Windows.Forms.DataVisualization.Charting.ChartArea chartArea2 = new System.Windows.Forms.DataVisualization.Charting.ChartArea();
-            System.Windows.Forms.DataVisualization.Charting.Legend legend2 = new System.Windows.Forms.DataVisualization.Charting.Legend();
-            System.Windows.Forms.DataVisualization.Charting.Series series2 = new System.Windows.Forms.DataVisualization.Charting.Series();
-            System.Windows.Forms.DataVisualization.Charting.ChartArea chartArea3 = new System.Windows.Forms.DataVisualization.Charting.ChartArea();
-            System.Windows.Forms.DataVisualization.Charting.Legend legend3 = new System.Windows.Forms.DataVisualization.Charting.Legend();
-            System.Windows.Forms.DataVisualization.Charting.Series series3 = new System.Windows.Forms.DataVisualization.Charting.Series();
+            System.Windows.Forms.DataVisualization.Charting.ChartArea chartArea7 = new System.Windows.Forms.DataVisualization.Charting.ChartArea();
+            System.Windows.Forms.DataVisualization.Charting.Legend legend7 = new System.Windows.Forms.DataVisualization.Charting.Legend();
+            System.Windows.Forms.DataVisualization.Charting.Series series7 = new System.Windows.Forms.DataVisualization.Charting.Series();
+            System.Windows.Forms.DataVisualization.Charting.ChartArea chartArea8 = new System.Windows.Forms.DataVisualization.Charting.ChartArea();
+            System.Windows.Forms.DataVisualization.Charting.Legend legend8 = new System.Windows.Forms.DataVisualization.Charting.Legend();
+            System.Windows.Forms.DataVisualization.Charting.Series series8 = new System.Windows.Forms.DataVisualization.Charting.Series();
+            System.Windows.Forms.DataVisualization.Charting.ChartArea chartArea9 = new System.Windows.Forms.DataVisualization.Charting.ChartArea();
+            System.Windows.Forms.DataVisualization.Charting.Legend legend9 = new System.Windows.Forms.DataVisualization.Charting.Legend();
+            System.Windows.Forms.DataVisualization.Charting.Series series9 = new System.Windows.Forms.DataVisualization.Charting.Series();
             this.tableLayoutPanel1 = new System.Windows.Forms.TableLayoutPanel();
             this.tableLayoutPanel6 = new System.Windows.Forms.TableLayoutPanel();
             this.tableLayoutPanel9 = new System.Windows.Forms.TableLayoutPanel();
@@ -155,6 +155,7 @@ namespace IHM_ESP
             this.btn_start.TabIndex = 1;
             this.btn_start.Text = "Iniciar";
             this.btn_start.UseVisualStyleBackColor = true;
+            this.btn_start.Click += new System.EventHandler(this.btn_start_Click);
             // 
             // lb_axisX
             // 
@@ -212,6 +213,7 @@ namespace IHM_ESP
             this.label3.TabIndex = 3;
             this.label3.Text = "Ajuste de PWM";
             this.label3.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
+            this.label3.Visible = false;
             // 
             // tableLayoutPanel8
             // 
@@ -236,6 +238,7 @@ namespace IHM_ESP
             this.maskedTextBox2.Name = "maskedTextBox2";
             this.maskedTextBox2.Size = new System.Drawing.Size(134, 20);
             this.maskedTextBox2.TabIndex = 0;
+            this.maskedTextBox2.Visible = false;
             // 
             // button2
             // 
@@ -246,6 +249,7 @@ namespace IHM_ESP
             this.button2.TabIndex = 1;
             this.button2.Text = "Aplicar";
             this.button2.UseVisualStyleBackColor = true;
+            this.button2.Visible = false;
             // 
             // cbox_roll_x
             // 
@@ -403,17 +407,17 @@ namespace IHM_ESP
             // 
             // chart_speed
             // 
-            chartArea1.Name = "ChartArea1";
-            this.chart_speed.ChartAreas.Add(chartArea1);
+            chartArea7.Name = "ChartArea1";
+            this.chart_speed.ChartAreas.Add(chartArea7);
             this.chart_speed.Dock = System.Windows.Forms.DockStyle.Fill;
-            legend1.Name = "Legend1";
-            this.chart_speed.Legends.Add(legend1);
+            legend7.Name = "Legend1";
+            this.chart_speed.Legends.Add(legend7);
             this.chart_speed.Location = new System.Drawing.Point(249, 3);
             this.chart_speed.Name = "chart_speed";
-            series1.ChartArea = "ChartArea1";
-            series1.Legend = "Legend1";
-            series1.Name = "Series1";
-            this.chart_speed.Series.Add(series1);
+            series7.ChartArea = "ChartArea1";
+            series7.Legend = "Legend1";
+            series7.Name = "Series1";
+            this.chart_speed.Series.Add(series7);
             this.chart_speed.Size = new System.Drawing.Size(732, 181);
             this.chart_speed.TabIndex = 0;
             this.chart_speed.Text = "chart1";
@@ -422,34 +426,34 @@ namespace IHM_ESP
             // 
             // chart_voltage
             // 
-            chartArea2.Name = "ChartArea1";
-            this.chart_voltage.ChartAreas.Add(chartArea2);
+            chartArea8.Name = "ChartArea1";
+            this.chart_voltage.ChartAreas.Add(chartArea8);
             this.chart_voltage.Dock = System.Windows.Forms.DockStyle.Fill;
-            legend2.Name = "Legend1";
-            this.chart_voltage.Legends.Add(legend2);
+            legend8.Name = "Legend1";
+            this.chart_voltage.Legends.Add(legend8);
             this.chart_voltage.Location = new System.Drawing.Point(249, 190);
             this.chart_voltage.Name = "chart_voltage";
-            series2.ChartArea = "ChartArea1";
-            series2.Legend = "Legend1";
-            series2.Name = "Series1";
-            this.chart_voltage.Series.Add(series2);
+            series8.ChartArea = "ChartArea1";
+            series8.Legend = "Legend1";
+            series8.Name = "Series1";
+            this.chart_voltage.Series.Add(series8);
             this.chart_voltage.Size = new System.Drawing.Size(732, 181);
             this.chart_voltage.TabIndex = 1;
             this.chart_voltage.Text = "chart2";
             // 
             // chart_current
             // 
-            chartArea3.Name = "ChartArea1";
-            this.chart_current.ChartAreas.Add(chartArea3);
+            chartArea9.Name = "ChartArea1";
+            this.chart_current.ChartAreas.Add(chartArea9);
             this.chart_current.Dock = System.Windows.Forms.DockStyle.Fill;
-            legend3.Name = "Legend1";
-            this.chart_current.Legends.Add(legend3);
+            legend9.Name = "Legend1";
+            this.chart_current.Legends.Add(legend9);
             this.chart_current.Location = new System.Drawing.Point(249, 377);
             this.chart_current.Name = "chart_current";
-            series3.ChartArea = "ChartArea1";
-            series3.Legend = "Legend1";
-            series3.Name = "Series1";
-            this.chart_current.Series.Add(series3);
+            series9.ChartArea = "ChartArea1";
+            series9.Legend = "Legend1";
+            series9.Name = "Series1";
+            this.chart_current.Series.Add(series9);
             this.chart_current.Size = new System.Drawing.Size(732, 181);
             this.chart_current.TabIndex = 2;
             this.chart_current.Text = "chart3";
@@ -491,6 +495,7 @@ namespace IHM_ESP
             this.btn_connect.TabIndex = 1;
             this.btn_connect.Text = "Conectar";
             this.btn_connect.UseVisualStyleBackColor = true;
+            this.btn_connect.Click += new System.EventHandler(this.btn_connect_Click);
             // 
             // timer1
             // 

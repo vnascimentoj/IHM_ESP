@@ -9,7 +9,7 @@ namespace IHM_ESP
         const int CHECKSUM_SIZE = 1; //Em bytes
         public byte length { get; protected set; }
         public abstract byte code { get; }
-        byte[] data;
+        public byte[] data { get; protected set; }
         byte checkSum;
 
         public Message() { }
@@ -24,14 +24,15 @@ namespace IHM_ESP
 
             buffer.Add(code);
 
-            foreach (byte d in data)
-                buffer.Add(d);
+            if(data != null)
+                foreach (byte d in data)
+                    buffer.Add(d);
 
             length = Convert.ToByte(buffer.Count + CHECKSUM_SIZE);
-            buffer.Prepend(length);
+            buffer.Insert(0, length);
 
             checkSum = Convert.ToByte(buffer.Sum(b => b));
-            buffer.Append(checkSum);
+            buffer.Add(checkSum);
 
             return buffer.ToArray();
         }

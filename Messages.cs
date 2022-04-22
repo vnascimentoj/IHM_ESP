@@ -10,26 +10,57 @@
         public override byte code => 19;
     }
 
+    class StopMessage : Message
+    {
+        public override byte code => 20;
+    }
+
     #region Setters  // Ok
 
     class SetPwmMessage : Message // Ok
     {
+        public SetPwmMessage() { }
+        public SetPwmMessage(byte[] data) : base(data) {}
+
         public override byte code => 01;
     }
     class SetRpmMessage : Message // Ok
     {
+        public SetRpmMessage() { }
+        public SetRpmMessage(int rpm)
+        {
+            data = System.BitConverter.GetBytes(rpm);
+            System.Array.Reverse(data);
+        }
+
         public override byte code => 03;
     }
     class SetMaxPwmMessage : Message // Ok
     {
+        public SetMaxPwmMessage() { }
+
+        public SetMaxPwmMessage(int duty)
+        {
+            data = System.BitConverter.GetBytes(duty);
+            System.Array.Reverse(data);
+        }
+
         public override byte code => 08;
     }
     class SetMinPwmMessage : Message // Ok
     {
+        public SetMinPwmMessage() { }
+        public SetMinPwmMessage(int duty)
+        {
+            data = System.BitConverter.GetBytes(duty);
+            System.Array.Reverse(data);
+        }
+
         public override byte code => 11;
     }
     class SetMaxCurrentMessage : Message // Ok
     {
+
         public override byte code => 05;
     }
     class SetPMessage : Message // Ok
