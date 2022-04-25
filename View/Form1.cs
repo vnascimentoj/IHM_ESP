@@ -220,8 +220,8 @@ namespace IHM_ESP
             { 
                 const int codeLength = 1;
                 int rpm = BitConverter.ToInt32(buffer, codeLength);
-                float voltage = BitConverter.ToSingle(buffer, codeLength + sizeof(int));
-                float current = BitConverter.ToSingle(buffer, codeLength + sizeof(int) + sizeof(float));
+                int voltage = BitConverter.ToInt32(buffer, codeLength + sizeof(int));
+                int current = BitConverter.ToInt32(buffer, codeLength + sizeof(int) + sizeof(int));
 
                 chart_speed.Series["Velocidade"].Points.AddXY(chart_speed.Series["Velocidade"].Points.Count, rpm);
                 chart_voltage.Series["Tensão"].Points.AddXY(chart_voltage.Series["Tensão"].Points.Count, voltage);
