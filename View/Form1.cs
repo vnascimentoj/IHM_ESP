@@ -211,16 +211,22 @@ namespace IHM_ESP
 
         public void DataReceived(byte[] buffer)
         {
-            const int codeLength = 1;
-            int rpm = BitConverter.ToInt32(buffer, codeLength);
-            float voltage = BitConverter.ToSingle(buffer, codeLength + sizeof(int));
-            float current = BitConverter.ToSingle(buffer, codeLength + sizeof(int) + sizeof(float));
+            if (this.InvokeRequired && !this.IsDisposed)
+            {
+                Action safeAdd = delegate { DataReceived(buffer); };
+                this.BeginInvoke(safeAdd);
+            }
+            else 
+            { 
+                const int codeLength = 1;
+                int rpm = BitConverter.ToInt32(buffer, codeLength);
+                float voltage = BitConverter.ToSingle(buffer, codeLength + sizeof(int));
+                float current = BitConverter.ToSingle(buffer, codeLength + sizeof(int) + sizeof(float));
 
-            
-            //chart_speed.Series["Velocidade"].Points.AddY(Math.Round(value * chart_speed.ChartAreas[0].AxisY.Maximum));
-            chart_speed.Series["Velocidade"].Points.AddXY(chart_speed.Series["Velocidade"].Points.Count, rpm);
-            chart_voltage.Series["Tensão"].Points.AddXY(chart_voltage.Series["Tensão"].Points.Count, voltage);
-            chart_current.Series["Corrente"].Points.AddXY(chart_current.Series["Corrente"].Points.Count, current);
+                chart_speed.Series["Velocidade"].Points.AddXY(chart_speed.Series["Velocidade"].Points.Count, rpm);
+                chart_voltage.Series["Tensão"].Points.AddXY(chart_voltage.Series["Tensão"].Points.Count, voltage);
+                chart_current.Series["Corrente"].Points.AddXY(chart_current.Series["Corrente"].Points.Count, current);
+            }
         }
 
         private void btn_connect_Click(object sender, EventArgs e)
@@ -228,7 +234,7 @@ namespace IHM_ESP
             string comPort = comboBox1.SelectedItem.ToString();
             comm = new ESPComm(comPort, 115200);
 
-            // Cadastrando manualmente função de recebimento de mensagem de dados (tensão, corrente e rpm)
+            // Cadastrando manualmente função de recebimento de mensagem de dados (rpm, tensão e corrente)
             int code = new DataMessage().code;
             comm.RegisterEvent(code, DataReceived);
 
