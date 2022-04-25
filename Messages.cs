@@ -14,6 +14,10 @@
     {
         public override byte code => 20;
     }
+    class DataMessage : Message
+    {
+        public override byte code => 09;
+    }
 
     #region Setters  // Ok
 

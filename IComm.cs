@@ -2,6 +2,8 @@
 {
     public abstract class IComm
     {
+        public delegate void MessageReceivedEventHandler(byte[] message);
+        public abstract void RegisterEvent(int code, MessageReceivedEventHandler func);
         public abstract void SetPWM(double duty);
 
         public abstract void SetPWM(int duty);

@@ -12,7 +12,7 @@ namespace IHM_ESP
     {
         const int MAX_PWM = 1023;
         SerialPort serialPort;
-        public delegate void MessageReceivedEventHandler(byte[] message);
+        
         Dictionary<int, MessageReceivedEventHandler> onMessageReceived;
         Dictionary<int, Type> codeMessagePair = new Dictionary<int, Type>();
 
@@ -26,6 +26,11 @@ namespace IHM_ESP
 
             checkDuplicateMessageCodes();
             printAllMessages();
+        }
+
+        public override void RegisterEvent(int code, MessageReceivedEventHandler func)
+        {
+            onMessageReceived[code] = func;
         }
 
         private void checkDuplicateMessageCodes()

@@ -20,6 +20,7 @@ namespace IHM_ESP
             foreach (var port in SerialPort.GetPortNames())
                 comboBox1.Items.Add(port);
 
+
         }
 
         private void InitializeMenu()
@@ -150,22 +151,28 @@ namespace IHM_ESP
                 chart_current.Series["Corrente"].Points.AddY(value * chart_current.ChartAreas[0].AxisY.Maximum);
             }
 
+        } // End AddSpeedData
+
+
+        private Random random = new Random();
+        private void timer1_Tick(object sender, EventArgs e)
+        {
+            //AddSpeedData(new double[] { random.NextDouble() / 2 + 0.5 });
 
             if (cbox_roll_x.Checked)
-            {   
+            {
                 if (chart_speed.Series["Velocidade"].Points.Count + 20 > chart_speed.ChartAreas[0].AxisX.Maximum)
                 {
                     chart_speed.ChartAreas[0].AxisX.Minimum = chart_speed.Series["Velocidade"].Points.Count - 80;
                     chart_speed.ChartAreas[0].AxisX.Maximum = chart_speed.Series["Velocidade"].Points.Count + 20;
+
+                    chart_voltage.ChartAreas[0].AxisX.Minimum = chart_voltage.Series["Tensão"].Points.Count - 80;
+                    chart_voltage.ChartAreas[0].AxisX.Maximum = chart_voltage.Series["Tensão"].Points.Count + 20;
+
+                    chart_current.ChartAreas[0].AxisX.Minimum = chart_current.Series["Corrente"].Points.Count - 80;
+                    chart_current.ChartAreas[0].AxisX.Maximum = chart_current.Series["Corrente"].Points.Count + 20;
                 }
             }
-
-
-        }
-        private Random random = new Random();
-        private void timer1_Tick(object sender, EventArgs e)
-        {
-            AddSpeedData(new double[] { random.NextDouble() / 2 + 0.5 });
         }
 
         Point prevPosition = new Point();
@@ -202,10 +209,28 @@ namespace IHM_ESP
             }
         }
 
+        public void DataReceived(byte[] buffer)
+        {
+            const int codeLength = 1;
+            int rpm = BitConverter.ToInt32(buffer, codeLength);
+            float voltage = BitConverter.ToSingle(buffer, codeLength + sizeof(int));
+            float current = BitConverter.ToSingle(buffer, codeLength + sizeof(int) + sizeof(float));
+
+            
+            //chart_speed.Series["Velocidade"].Points.AddY(Math.Round(value * chart_speed.ChartAreas[0].AxisY.Maximum));
+            chart_speed.Series["Velocidade"].Points.AddXY(chart_speed.Series["Velocidade"].Points.Count, rpm);
+            chart_voltage.Series["Tensão"].Points.AddXY(chart_voltage.Series["Tensão"].Points.Count, voltage);
+            chart_current.Series["Corrente"].Points.AddXY(chart_current.Series["Corrente"].Points.Count, current);
+        }
+
         private void btn_connect_Click(object sender, EventArgs e)
         {
             string comPort = comboBox1.SelectedItem.ToString();
             comm = new ESPComm(comPort, 115200);
+
+            // Cadastrando manualmente função de recebimento de mensagem de dados (tensão, corrente e rpm)
+            int code = new DataMessage().code;
+            comm.RegisterEvent(code, DataReceived);
         }
 
         bool start = false;
