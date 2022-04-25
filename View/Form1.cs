@@ -231,6 +231,8 @@ namespace IHM_ESP
             // Cadastrando manualmente função de recebimento de mensagem de dados (tensão, corrente e rpm)
             int code = new DataMessage().code;
             comm.RegisterEvent(code, DataReceived);
+
+            btn_connect.Enabled = false;
         }
 
         bool start = false;

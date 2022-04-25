@@ -68,6 +68,9 @@ namespace IHM_ESP
         private void serialPort_DataReceived(object sender, SerialDataReceivedEventArgs e)
         {
             int bytesToRead = serialPort.ReadByte();
+            if (bytesToRead == 0)
+                return;
+
             if (!SpinWait.SpinUntil(() => serialPort.BytesToRead >= bytesToRead, 50))
             {
                 serialPort.DiscardInBuffer();
@@ -84,7 +87,8 @@ namespace IHM_ESP
             for (int i = 0; i < bytesToRead - 1; i++)
                 sum += buffer[i];
 
-            
+            Debug.WriteLine("Tam: " + bytesToRead.ToString() + " Msg: " + BitConverter.ToString(buffer));
+
             if (checksum != (sum % 256))
             {
                 Debug.WriteLine("Erro de checksum");
