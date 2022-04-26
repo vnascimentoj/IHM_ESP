@@ -83,10 +83,10 @@ namespace IHM_ESP
             int code = buffer[0];
             int checksum = buffer[buffer.Length - 1];
 
-            int sum = 0;
+            int sum = bytesToRead;
             for (int i = 0; i < bytesToRead - 1; i++)
                 sum += buffer[i];
-
+            
             Debug.WriteLine("Tam: " + bytesToRead.ToString() + " Msg: " + BitConverter.ToString(buffer));
 
             if (checksum != (sum % 256))
