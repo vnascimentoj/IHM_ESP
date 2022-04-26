@@ -31,7 +31,7 @@ namespace IHM_ESP
             length = Convert.ToByte(buffer.Count + CHECKSUM_SIZE);
             buffer.Insert(0, length);
 
-            checkSum = Convert.ToByte(buffer.Sum(b => b));
+            checkSum = Convert.ToByte(buffer.Sum(b => b) % 256);
             buffer.Add(checkSum);
 
             return buffer.ToArray();

@@ -20,7 +20,8 @@ namespace IHM_ESP
             foreach (var port in SerialPort.GetPortNames())
                 comboBox1.Items.Add(port);
 
-
+            btn_set_pwm.Enabled = false;
+            btn_set_speed.Enabled = false;
         }
 
         private void InitializeMenu()
@@ -239,6 +240,8 @@ namespace IHM_ESP
             comm.RegisterEvent(code, DataReceived);
 
             btn_connect.Enabled = false;
+            btn_set_speed.Enabled = true;
+            btn_set_pwm.Enabled = true;
         }
 
         bool start = false;
@@ -255,6 +258,7 @@ namespace IHM_ESP
                 btn_start.Text = "Parar";
                 comm.Stop();
             }
+            System.Threading.Thread.Sleep(1000);
         }
     }
 }
