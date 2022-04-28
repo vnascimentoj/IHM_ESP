@@ -226,9 +226,9 @@ namespace IHM_ESP
 
                 for (int i = 0; i < loop; i++)
                 { 
-                    int rpm = BitConverter.ToInt32(buffer, codeLength);
-                    int voltage = BitConverter.ToInt32(buffer, codeLength + sizeof(int));
-                    int current = BitConverter.ToInt32(buffer, codeLength + sizeof(int) + sizeof(int));
+                    int rpm = BitConverter.ToInt32(buffer, i * 12 + codeLength);
+                    int voltage = BitConverter.ToInt32(buffer, i * 12 + codeLength + sizeof(int));
+                    int current = BitConverter.ToInt32(buffer, i * 12 + codeLength + sizeof(int) + sizeof(int));
 
                     chart_speed.Series["Velocidade"].Points.AddXY(chart_speed.Series["Velocidade"].Points.Count, rpm);
                     chart_voltage.Series["Tensão"].Points.AddXY(chart_voltage.Series["Tensão"].Points.Count, voltage);
