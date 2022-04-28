@@ -220,13 +220,20 @@ namespace IHM_ESP
             else 
             { 
                 const int codeLength = 1;
-                int rpm = BitConverter.ToInt32(buffer, codeLength);
-                int voltage = BitConverter.ToInt32(buffer, codeLength + sizeof(int));
-                int current = BitConverter.ToInt32(buffer, codeLength + sizeof(int) + sizeof(int));
+                const int checksumLength = 1;
+                const int nData = 3;
+                int loop = (buffer.Length - codeLength - checksumLength) / (nData * sizeof(int));
 
-                chart_speed.Series["Velocidade"].Points.AddXY(chart_speed.Series["Velocidade"].Points.Count, rpm);
-                chart_voltage.Series["Tensão"].Points.AddXY(chart_voltage.Series["Tensão"].Points.Count, voltage);
-                chart_current.Series["Corrente"].Points.AddXY(chart_current.Series["Corrente"].Points.Count, current);
+                for (int i = 0; i < loop; i++)
+                { 
+                    int rpm = BitConverter.ToInt32(buffer, codeLength);
+                    int voltage = BitConverter.ToInt32(buffer, codeLength + sizeof(int));
+                    int current = BitConverter.ToInt32(buffer, codeLength + sizeof(int) + sizeof(int));
+
+                    chart_speed.Series["Velocidade"].Points.AddXY(chart_speed.Series["Velocidade"].Points.Count, rpm);
+                    chart_voltage.Series["Tensão"].Points.AddXY(chart_voltage.Series["Tensão"].Points.Count, voltage);
+                    chart_current.Series["Corrente"].Points.AddXY(chart_current.Series["Corrente"].Points.Count, current);
+                }
             }
         }
 

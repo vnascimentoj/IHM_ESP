@@ -94,7 +94,7 @@ namespace IHM_ESP
                 Debug.WriteLine("Erro de checksum");
                 return;
             }
-
+            
             // Encaminha mensagem recebida para a função adequada (se houver)
             if (onMessageReceived.ContainsKey(code))
                 onMessageReceived[code](buffer);
