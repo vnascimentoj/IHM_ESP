@@ -422,6 +422,7 @@ namespace IHM_ESP
             this.chart_speed.TabIndex = 0;
             this.chart_speed.Text = "chart1";
             this.chart_speed.Click += new System.EventHandler(this.chart_speed_Click);
+            this.chart_speed.DoubleClick += new System.EventHandler(this.chart_speed_DoubleClick);
             this.chart_speed.MouseMove += new System.Windows.Forms.MouseEventHandler(this.chart_speed_MouseMove);
             // 
             // chart_voltage
@@ -440,6 +441,8 @@ namespace IHM_ESP
             this.chart_voltage.Size = new System.Drawing.Size(732, 181);
             this.chart_voltage.TabIndex = 1;
             this.chart_voltage.Text = "chart2";
+            this.chart_voltage.Click += new System.EventHandler(this.chart_voltage_Click);
+            this.chart_voltage.DoubleClick += new System.EventHandler(this.chart_voltage_DoubleClick);
             // 
             // chart_current
             // 
@@ -457,6 +460,8 @@ namespace IHM_ESP
             this.chart_current.Size = new System.Drawing.Size(732, 181);
             this.chart_current.TabIndex = 2;
             this.chart_current.Text = "chart3";
+            this.chart_current.Click += new System.EventHandler(this.chart_current_Click);
+            this.chart_current.DoubleClick += new System.EventHandler(this.chart_current_DoubleClick);
             // 
             // tableLayoutPanel2
             // 

@@ -47,7 +47,14 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="ChartConfig.cs" />
     <Compile Include="ESPComm.cs" />
+    <Compile Include="View\FormChartConfig.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="View\FormChartConfig.Designer.cs">
+      <DependentUpon>FormChartConfig.cs</DependentUpon>
+    </Compile>
     <Compile Include="View\Form1.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -59,6 +66,9 @@
     <Compile Include="Messages.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <EmbeddedResource Include="View\FormChartConfig.resx">
+      <DependentUpon>FormChartConfig.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="View\Form1.resx">
       <DependentUpon>Form1.cs</DependentUpon>
     </EmbeddedResource>

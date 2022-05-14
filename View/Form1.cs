@@ -10,6 +10,10 @@ namespace IHM_ESP
     {
         IComm comm;
         MainMenu mainMenu;
+
+        ChartConfig speedConfig = new ChartConfig() { multiplier = 1};
+        ChartConfig voltageConfig = new ChartConfig() { multiplier = 1 };
+        ChartConfig currentConfig = new ChartConfig() { multiplier = 1 };
         public Form1()
         {
             InitializeComponent();
@@ -136,10 +140,6 @@ namespace IHM_ESP
             comm.SetPWM(value);
         }
 
-        private void chart_speed_Click(object sender, EventArgs e)
-        {
-            
-        }
 
         // Função está adicionando em todos os gráficos para testes
         public void AddSpeedData(double[] data)
@@ -226,9 +226,9 @@ namespace IHM_ESP
 
                 for (int i = 0; i < loop; i++)
                 { 
-                    int rpm = BitConverter.ToInt32(buffer, i * 12 + codeLength);
-                    int voltage = BitConverter.ToInt32(buffer, i * 12 + codeLength + sizeof(int));
-                    int current = BitConverter.ToInt32(buffer, i * 12 + codeLength + sizeof(int) + sizeof(int));
+                    int rpm = (int)(BitConverter.ToInt32(buffer, i * 12 + codeLength) * speedConfig.multiplier);
+                    int voltage = (int)(BitConverter.ToInt32(buffer, i * 12 + codeLength + sizeof(int)) *voltageConfig.multiplier);
+                    int current = (int)(BitConverter.ToInt32(buffer, i * 12 + codeLength + sizeof(int) + sizeof(int)) * currentConfig.multiplier);
 
                     chart_speed.Series["Velocidade"].Points.AddXY(chart_speed.Series["Velocidade"].Points.Count, rpm);
                     chart_voltage.Series["Tensão"].Points.AddXY(chart_voltage.Series["Tensão"].Points.Count, voltage);
@@ -266,6 +266,47 @@ namespace IHM_ESP
                 comm.Stop();
             }
             System.Threading.Thread.Sleep(1000);
+        }
+        private void chart_speed_Click(object sender, EventArgs e)
+        {
+
+        }
+
+        private void chart_voltage_Click(object sender, EventArgs e)
+        {
+
+        }
+
+        private void chart_current_Click(object sender, EventArgs e)
+        {
+
+        }
+
+        private void chart_speed_DoubleClick(object sender, EventArgs e)
+        {
+            Form form = new View.FormChartConfig(speedConfig);
+            form.ShowDialog();
+            chart_update(chart_speed, speedConfig);
+        }
+
+        private void chart_voltage_DoubleClick(object sender, EventArgs e)
+        {
+            Form form = new View.FormChartConfig(voltageConfig);
+            form.ShowDialog();
+            chart_update(chart_voltage, voltageConfig);
+        }
+
+        private void chart_current_DoubleClick(object sender, EventArgs e)
+        {
+            Form form = new View.FormChartConfig(currentConfig);
+            form.ShowDialog();
+            chart_update(chart_current, currentConfig);
+        }
+
+        private void chart_update(System.Windows.Forms.DataVisualization.Charting.Chart chart, ChartConfig config)
+        {
+            chart.ChartAreas[0].AxisY.Minimum = config.y_min;
+            chart.ChartAreas[0].AxisY.Maximum = config.y_max;
         }
     }
 }
