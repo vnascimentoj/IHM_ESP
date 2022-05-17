@@ -11,9 +11,10 @@ namespace IHM_ESP
         IComm comm;
         MainMenu mainMenu;
 
-        ChartConfig speedConfig = new ChartConfig() { multiplier = 1};
-        ChartConfig voltageConfig = new ChartConfig() { multiplier = 1 };
-        ChartConfig currentConfig = new ChartConfig() { multiplier = 1 };
+        ChartConfig speedConfig   = new ChartConfig() { multiplier = 1, x_max = 100, x_min = 0, y_max = 2200, y_min = 0 };
+        ChartConfig voltageConfig = new ChartConfig() { multiplier = 1, x_max = 100, x_min = 0, y_max = 250, y_min = 0 };
+        ChartConfig currentConfig = new ChartConfig() { multiplier = 1, x_max = 100, x_min = 0, y_max = 10, y_min = 0 };
+        int roll_x = 100;
         public Form1()
         {
             InitializeComponent();
@@ -51,16 +52,20 @@ namespace IHM_ESP
             textBox_pwm.Mask = "999";
             textBox_pwm.PromptChar = ' ';
             textBox_pwm.Text = trackBar_pwm.Minimum.ToString();
+
+            textBox_roll_x.Mask = "999";
+            textBox_roll_x.PromptChar = ' ';
+            textBox_roll_x.Text = roll_x.ToString();
         }
 
         private void InitializeCharts()
         {
             //Ajustes do gráfico de velocidade
             chart_speed.Titles.Add("Velocidade");
-            chart_speed.ChartAreas[0].AxisX.Minimum = 0;
-            chart_speed.ChartAreas[0].AxisX.Maximum = 100;
-            chart_speed.ChartAreas[0].AxisY.Minimum = 0;
-            chart_speed.ChartAreas[0].AxisY.Maximum = 2200;
+            chart_speed.ChartAreas[0].AxisX.Minimum = speedConfig.x_min;
+            chart_speed.ChartAreas[0].AxisX.Maximum = speedConfig.x_max;
+            chart_speed.ChartAreas[0].AxisY.Minimum = speedConfig.y_min;
+            chart_speed.ChartAreas[0].AxisY.Maximum = speedConfig.y_max;
             chart_speed.ChartAreas[0].AxisY.Title = "RPM";
             chart_speed.Series.Clear();
             chart_speed.Series.Add("Velocidade");
@@ -69,20 +74,20 @@ namespace IHM_ESP
 
             //Ajustes do gráfico de tensão de armadura
             chart_voltage.Titles.Add("Tensão de armadura");
-            chart_voltage.ChartAreas[0].AxisX.Minimum = 0;
-            chart_voltage.ChartAreas[0].AxisX.Maximum = 100;
-            chart_voltage.ChartAreas[0].AxisY.Minimum = 0;
-            chart_voltage.ChartAreas[0].AxisY.Maximum = 250;
+            chart_voltage.ChartAreas[0].AxisX.Minimum = voltageConfig.x_min;
+            chart_voltage.ChartAreas[0].AxisX.Maximum = voltageConfig.x_max;
+            chart_voltage.ChartAreas[0].AxisY.Minimum = voltageConfig.y_min;
+            chart_voltage.ChartAreas[0].AxisY.Maximum = voltageConfig.y_max;
             chart_voltage.Series.Clear();
             chart_voltage.Series.Add("Tensão");
             chart_voltage.Series["Tensão"].ChartType = System.Windows.Forms.DataVisualization.Charting.SeriesChartType.FastLine;
 
             //Ajustes do gráfico de corrente de armadura
             chart_current.Titles.Add("Corrente de armadura");
-            chart_current.ChartAreas[0].AxisX.Minimum = 0;
-            chart_current.ChartAreas[0].AxisX.Maximum = 100;
-            chart_current.ChartAreas[0].AxisY.Minimum = 0;
-            chart_current.ChartAreas[0].AxisY.Maximum = 15;
+            chart_current.ChartAreas[0].AxisX.Minimum = voltageConfig.x_min;
+            chart_current.ChartAreas[0].AxisX.Maximum = voltageConfig.x_max;
+            chart_current.ChartAreas[0].AxisY.Minimum = voltageConfig.y_min;
+            chart_current.ChartAreas[0].AxisY.Maximum = voltageConfig.y_max;
             chart_current.Series.Clear();
             chart_current.Series.Add("Corrente");
             chart_current.Series["Corrente"].ChartType = System.Windows.Forms.DataVisualization.Charting.SeriesChartType.Spline;
@@ -164,14 +169,14 @@ namespace IHM_ESP
             {
                 if (chart_speed.Series["Velocidade"].Points.Count + 20 > chart_speed.ChartAreas[0].AxisX.Maximum)
                 {
-                    chart_speed.ChartAreas[0].AxisX.Minimum = chart_speed.Series["Velocidade"].Points.Count - 80;
-                    chart_speed.ChartAreas[0].AxisX.Maximum = chart_speed.Series["Velocidade"].Points.Count + 20;
+                    chart_speed.ChartAreas[0].AxisX.Minimum = chart_speed.Series["Velocidade"].Points.Count - (roll_x - 10);
+                    chart_speed.ChartAreas[0].AxisX.Maximum = chart_speed.Series["Velocidade"].Points.Count + 10;
 
-                    chart_voltage.ChartAreas[0].AxisX.Minimum = chart_voltage.Series["Tensão"].Points.Count - 80;
-                    chart_voltage.ChartAreas[0].AxisX.Maximum = chart_voltage.Series["Tensão"].Points.Count + 20;
+                    chart_voltage.ChartAreas[0].AxisX.Minimum = chart_voltage.Series["Tensão"].Points.Count - (roll_x - 10);
+                    chart_voltage.ChartAreas[0].AxisX.Maximum = chart_voltage.Series["Tensão"].Points.Count + 10;
 
-                    chart_current.ChartAreas[0].AxisX.Minimum = chart_current.Series["Corrente"].Points.Count - 80;
-                    chart_current.ChartAreas[0].AxisX.Maximum = chart_current.Series["Corrente"].Points.Count + 20;
+                    chart_current.ChartAreas[0].AxisX.Minimum = chart_current.Series["Corrente"].Points.Count - (roll_x - 10);
+                    chart_current.ChartAreas[0].AxisX.Maximum = chart_current.Series["Corrente"].Points.Count + 10;
                 }
             }
         }
@@ -304,9 +309,34 @@ namespace IHM_ESP
         }
 
         private void chart_update(System.Windows.Forms.DataVisualization.Charting.Chart chart, ChartConfig config)
-        {
+        {   
             chart.ChartAreas[0].AxisY.Minimum = config.y_min;
             chart.ChartAreas[0].AxisY.Maximum = config.y_max;
         }
+
+        private void textBox_roll_x_KeyDown(object sender, KeyEventArgs e)
+        {
+            if(e.KeyCode == Keys.Enter)
+            {
+                btn_set_roll_Click(sender, e);
+            }
+        }
+
+        private void btn_set_roll_Click(object sender, EventArgs e)
+        {
+            int temp = 0;
+            try
+            {
+                temp = Convert.ToInt32(textBox_roll_x.Text);
+            } catch(Exception ex)
+            {                
+                MessageBox.Show(ex.Message);
+                return;
+            }
+            if (temp > 0)
+                roll_x = temp;
+            else
+                MessageBox.Show("Valor deve ser maior que zero.");
+            }
     }
 }

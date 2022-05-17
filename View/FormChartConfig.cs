@@ -17,6 +17,21 @@ namespace IHM_ESP.View
         {
             InitializeComponent();
             config = chartConfig;
+            InitializeTextBox();
+        }
+        private void InitializeTextBox()
+        {
+            tb_ymax.Mask = "9999";
+            tb_ymax.PromptChar = ' '; 
+            tb_ymax.Text = config.y_max.ToString();
+
+            tb_ymin.Mask = "9999";
+            tb_ymin.PromptChar = ' ';
+            tb_ymin.Text = config.y_min.ToString();
+
+            tb_mult.Mask = "9.9";
+            tb_mult.PromptChar = ' ';
+            tb_mult.Text = config.multiplier.ToString("0.0");
         }
 
         private void btn_ok_Click(object sender, EventArgs e)

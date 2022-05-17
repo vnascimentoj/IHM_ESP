@@ -30,23 +30,23 @@ namespace IHM_ESP
         private void InitializeComponent()
         {
             this.components = new System.ComponentModel.Container();
-            System.Windows.Forms.DataVisualization.Charting.ChartArea chartArea1 = new System.Windows.Forms.DataVisualization.Charting.ChartArea();
-            System.Windows.Forms.DataVisualization.Charting.Legend legend1 = new System.Windows.Forms.DataVisualization.Charting.Legend();
-            System.Windows.Forms.DataVisualization.Charting.Series series1 = new System.Windows.Forms.DataVisualization.Charting.Series();
-            System.Windows.Forms.DataVisualization.Charting.ChartArea chartArea2 = new System.Windows.Forms.DataVisualization.Charting.ChartArea();
-            System.Windows.Forms.DataVisualization.Charting.Legend legend2 = new System.Windows.Forms.DataVisualization.Charting.Legend();
-            System.Windows.Forms.DataVisualization.Charting.Series series2 = new System.Windows.Forms.DataVisualization.Charting.Series();
-            System.Windows.Forms.DataVisualization.Charting.ChartArea chartArea3 = new System.Windows.Forms.DataVisualization.Charting.ChartArea();
-            System.Windows.Forms.DataVisualization.Charting.Legend legend3 = new System.Windows.Forms.DataVisualization.Charting.Legend();
-            System.Windows.Forms.DataVisualization.Charting.Series series3 = new System.Windows.Forms.DataVisualization.Charting.Series();
+            System.Windows.Forms.DataVisualization.Charting.ChartArea chartArea7 = new System.Windows.Forms.DataVisualization.Charting.ChartArea();
+            System.Windows.Forms.DataVisualization.Charting.Legend legend7 = new System.Windows.Forms.DataVisualization.Charting.Legend();
+            System.Windows.Forms.DataVisualization.Charting.Series series7 = new System.Windows.Forms.DataVisualization.Charting.Series();
+            System.Windows.Forms.DataVisualization.Charting.ChartArea chartArea8 = new System.Windows.Forms.DataVisualization.Charting.ChartArea();
+            System.Windows.Forms.DataVisualization.Charting.Legend legend8 = new System.Windows.Forms.DataVisualization.Charting.Legend();
+            System.Windows.Forms.DataVisualization.Charting.Series series8 = new System.Windows.Forms.DataVisualization.Charting.Series();
+            System.Windows.Forms.DataVisualization.Charting.ChartArea chartArea9 = new System.Windows.Forms.DataVisualization.Charting.ChartArea();
+            System.Windows.Forms.DataVisualization.Charting.Legend legend9 = new System.Windows.Forms.DataVisualization.Charting.Legend();
+            System.Windows.Forms.DataVisualization.Charting.Series series9 = new System.Windows.Forms.DataVisualization.Charting.Series();
             this.tableLayoutPanel1 = new System.Windows.Forms.TableLayoutPanel();
             this.tableLayoutPanel6 = new System.Windows.Forms.TableLayoutPanel();
             this.tableLayoutPanel9 = new System.Windows.Forms.TableLayoutPanel();
             this.btn_start = new System.Windows.Forms.Button();
             this.lb_axisX = new System.Windows.Forms.Label();
             this.tableLayoutPanel7 = new System.Windows.Forms.TableLayoutPanel();
-            this.maskedTextBox1 = new System.Windows.Forms.MaskedTextBox();
-            this.button1 = new System.Windows.Forms.Button();
+            this.textBox_roll_x = new System.Windows.Forms.MaskedTextBox();
+            this.btn_set_roll = new System.Windows.Forms.Button();
             this.label3 = new System.Windows.Forms.Label();
             this.tableLayoutPanel8 = new System.Windows.Forms.TableLayoutPanel();
             this.maskedTextBox2 = new System.Windows.Forms.MaskedTextBox();
@@ -174,8 +174,8 @@ namespace IHM_ESP
             this.tableLayoutPanel7.ColumnCount = 2;
             this.tableLayoutPanel7.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 60F));
             this.tableLayoutPanel7.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 40F));
-            this.tableLayoutPanel7.Controls.Add(this.maskedTextBox1, 0, 0);
-            this.tableLayoutPanel7.Controls.Add(this.button1, 1, 0);
+            this.tableLayoutPanel7.Controls.Add(this.textBox_roll_x, 0, 0);
+            this.tableLayoutPanel7.Controls.Add(this.btn_set_roll, 1, 0);
             this.tableLayoutPanel7.Dock = System.Windows.Forms.DockStyle.Fill;
             this.tableLayoutPanel7.Location = new System.Drawing.Point(3, 26);
             this.tableLayoutPanel7.Name = "tableLayoutPanel7";
@@ -184,23 +184,25 @@ namespace IHM_ESP
             this.tableLayoutPanel7.Size = new System.Drawing.Size(234, 30);
             this.tableLayoutPanel7.TabIndex = 1;
             // 
-            // maskedTextBox1
+            // textBox_roll_x
             // 
-            this.maskedTextBox1.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.maskedTextBox1.Location = new System.Drawing.Point(3, 3);
-            this.maskedTextBox1.Name = "maskedTextBox1";
-            this.maskedTextBox1.Size = new System.Drawing.Size(134, 20);
-            this.maskedTextBox1.TabIndex = 0;
+            this.textBox_roll_x.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.textBox_roll_x.Location = new System.Drawing.Point(3, 3);
+            this.textBox_roll_x.Name = "textBox_roll_x";
+            this.textBox_roll_x.Size = new System.Drawing.Size(134, 20);
+            this.textBox_roll_x.TabIndex = 0;
+            this.textBox_roll_x.KeyDown += new System.Windows.Forms.KeyEventHandler(this.textBox_roll_x_KeyDown);
             // 
-            // button1
+            // btn_set_roll
             // 
-            this.button1.Dock = System.Windows.Forms.DockStyle.Top;
-            this.button1.Location = new System.Drawing.Point(143, 3);
-            this.button1.Name = "button1";
-            this.button1.Size = new System.Drawing.Size(88, 23);
-            this.button1.TabIndex = 1;
-            this.button1.Text = "Aplicar";
-            this.button1.UseVisualStyleBackColor = true;
+            this.btn_set_roll.Dock = System.Windows.Forms.DockStyle.Top;
+            this.btn_set_roll.Location = new System.Drawing.Point(143, 3);
+            this.btn_set_roll.Name = "btn_set_roll";
+            this.btn_set_roll.Size = new System.Drawing.Size(88, 23);
+            this.btn_set_roll.TabIndex = 1;
+            this.btn_set_roll.Text = "Aplicar";
+            this.btn_set_roll.UseVisualStyleBackColor = true;
+            this.btn_set_roll.Click += new System.EventHandler(this.btn_set_roll_Click);
             // 
             // label3
             // 
@@ -407,17 +409,17 @@ namespace IHM_ESP
             // 
             // chart_speed
             // 
-            chartArea1.Name = "ChartArea1";
-            this.chart_speed.ChartAreas.Add(chartArea1);
+            chartArea7.Name = "ChartArea1";
+            this.chart_speed.ChartAreas.Add(chartArea7);
             this.chart_speed.Dock = System.Windows.Forms.DockStyle.Fill;
-            legend1.Name = "Legend1";
-            this.chart_speed.Legends.Add(legend1);
+            legend7.Name = "Legend1";
+            this.chart_speed.Legends.Add(legend7);
             this.chart_speed.Location = new System.Drawing.Point(249, 3);
             this.chart_speed.Name = "chart_speed";
-            series1.ChartArea = "ChartArea1";
-            series1.Legend = "Legend1";
-            series1.Name = "Series1";
-            this.chart_speed.Series.Add(series1);
+            series7.ChartArea = "ChartArea1";
+            series7.Legend = "Legend1";
+            series7.Name = "Series1";
+            this.chart_speed.Series.Add(series7);
             this.chart_speed.Size = new System.Drawing.Size(732, 181);
             this.chart_speed.TabIndex = 0;
             this.chart_speed.Text = "chart1";
@@ -427,17 +429,17 @@ namespace IHM_ESP
             // 
             // chart_voltage
             // 
-            chartArea2.Name = "ChartArea1";
-            this.chart_voltage.ChartAreas.Add(chartArea2);
+            chartArea8.Name = "ChartArea1";
+            this.chart_voltage.ChartAreas.Add(chartArea8);
             this.chart_voltage.Dock = System.Windows.Forms.DockStyle.Fill;
-            legend2.Name = "Legend1";
-            this.chart_voltage.Legends.Add(legend2);
+            legend8.Name = "Legend1";
+            this.chart_voltage.Legends.Add(legend8);
             this.chart_voltage.Location = new System.Drawing.Point(249, 190);
             this.chart_voltage.Name = "chart_voltage";
-            series2.ChartArea = "ChartArea1";
-            series2.Legend = "Legend1";
-            series2.Name = "Series1";
-            this.chart_voltage.Series.Add(series2);
+            series8.ChartArea = "ChartArea1";
+            series8.Legend = "Legend1";
+            series8.Name = "Series1";
+            this.chart_voltage.Series.Add(series8);
             this.chart_voltage.Size = new System.Drawing.Size(732, 181);
             this.chart_voltage.TabIndex = 1;
             this.chart_voltage.Text = "chart2";
@@ -446,17 +448,17 @@ namespace IHM_ESP
             // 
             // chart_current
             // 
-            chartArea3.Name = "ChartArea1";
-            this.chart_current.ChartAreas.Add(chartArea3);
+            chartArea9.Name = "ChartArea1";
+            this.chart_current.ChartAreas.Add(chartArea9);
             this.chart_current.Dock = System.Windows.Forms.DockStyle.Fill;
-            legend3.Name = "Legend1";
-            this.chart_current.Legends.Add(legend3);
+            legend9.Name = "Legend1";
+            this.chart_current.Legends.Add(legend9);
             this.chart_current.Location = new System.Drawing.Point(249, 377);
             this.chart_current.Name = "chart_current";
-            series3.ChartArea = "ChartArea1";
-            series3.Legend = "Legend1";
-            series3.Name = "Series1";
-            this.chart_current.Series.Add(series3);
+            series9.ChartArea = "ChartArea1";
+            series9.Legend = "Legend1";
+            series9.Name = "Series1";
+            this.chart_current.Series.Add(series9);
             this.chart_current.Size = new System.Drawing.Size(732, 181);
             this.chart_current.TabIndex = 2;
             this.chart_current.Text = "chart3";
@@ -564,8 +566,8 @@ namespace IHM_ESP
         private System.Windows.Forms.TableLayoutPanel tableLayoutPanel6;
         private System.Windows.Forms.Label lb_axisX;
         private System.Windows.Forms.TableLayoutPanel tableLayoutPanel7;
-        private System.Windows.Forms.MaskedTextBox maskedTextBox1;
-        private System.Windows.Forms.Button button1;
+        private System.Windows.Forms.MaskedTextBox textBox_roll_x;
+        private System.Windows.Forms.Button btn_set_roll;
         private System.Windows.Forms.Label label3;
         private System.Windows.Forms.TableLayoutPanel tableLayoutPanel8;
         private System.Windows.Forms.Button button2;
