@@ -29,9 +29,9 @@ namespace IHM_ESP.View
             tb_ymin.PromptChar = ' ';
             tb_ymin.Text = config.y_min.ToString();
 
-            tb_mult.Mask = "9.9";
+            tb_mult.Mask = "9.9999";
             tb_mult.PromptChar = ' ';
-            tb_mult.Text = config.multiplier.ToString("0.0");
+            tb_mult.Text = config.multiplier.ToString("0.0000");
         }
 
         private void btn_ok_Click(object sender, EventArgs e)
