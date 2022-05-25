@@ -16,6 +16,17 @@ namespace IHM_ESP
         Dictionary<int, MessageReceivedEventHandler> onMessageReceived;
         Dictionary<int, Type> codeMessagePair = new Dictionary<int, Type>();
 
+        public override bool IsOpen 
+        { 
+            get 
+            {
+                if (serialPort != null)
+                    return serialPort.IsOpen;
+
+                return false;
+            } 
+        }
+
         public ESPComm(string comPort, int baudRate)
         {
             serialPort = new SerialPort(comPort, baudRate);
@@ -235,6 +246,12 @@ namespace IHM_ESP
         public override double GetD()
         {
             throw new NotImplementedException();
+        }
+
+        public override void Disconnect()
+        {
+            if (serialPort != null)
+                serialPort.Close();
         }
     }
 }

@@ -22,11 +22,15 @@ namespace IHM_ESP
             InitializeMenu();
             InitializeTextBox();
 
-            foreach (var port in SerialPort.GetPortNames())
-                comboBox1.Items.Add(port);
+            comboBox1.Click += ComboBox1_Click;
 
             btn_set_pwm.Enabled = false;
             btn_set_speed.Enabled = false;
+        }
+
+        private void ComboBox1_Click(object sender, EventArgs e)
+        {
+            update_com_list();
         }
 
         private void InitializeMenu()
@@ -159,10 +163,17 @@ namespace IHM_ESP
 
         } // End AddSpeedData
 
+        private void update_com_list()
+        {   
+            comboBox1.Items.Clear();
+            foreach (var port in SerialPort.GetPortNames())
+                comboBox1.Items.Add(port);
+        }
 
         private Random random = new Random();
         private void timer1_Tick(object sender, EventArgs e)
         {
+            //update_com_list();
             //AddSpeedData(new double[] { random.NextDouble() / 2 + 0.5 });
 
             if (cbox_roll_x.Checked)
@@ -244,16 +255,53 @@ namespace IHM_ESP
 
         private void btn_connect_Click(object sender, EventArgs e)
         {
-            string comPort = comboBox1.SelectedItem.ToString();
+            if (comm == null)
+            {
+                esp_connect();
+            }else
+            {
+                esp_disconnect();
+                comm = null;
+            }
+
+            update_com_list();
+        }
+
+        private void esp_disconnect()
+        {
+            if (comm != null)
+                comm.Disconnect();
+
+            btn_set_speed.Enabled = false;
+            btn_set_pwm.Enabled = false;
+
+            btn_connect.Text = "Conectar";
+            comboBox1.ResetText();
+        }
+
+        private void esp_connect()
+        {
+            string comPort;
+            try
+            {
+                comPort = comboBox1.SelectedItem.ToString();
+            }
+            catch(Exception ex)
+            {
+                MessageBox.Show("Selecione uma porta válida.");
+                return;
+            }
+                
             comm = new ESPComm(comPort, 115200);
 
             // Cadastrando manualmente função de recebimento de mensagem de dados (rpm, tensão e corrente)
             int code = new DataMessage().code;
             comm.RegisterEvent(code, DataReceived);
 
-            btn_connect.Enabled = false;
             btn_set_speed.Enabled = true;
             btn_set_pwm.Enabled = true;
+
+            btn_connect.Text = "Desconectar";
         }
 
         bool start = false;

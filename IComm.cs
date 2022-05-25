@@ -2,6 +2,10 @@
 {
     public abstract class IComm
     {
+        public abstract bool IsOpen { get; }
+
+        public abstract void Disconnect();
+
         public delegate void MessageReceivedEventHandler(byte[] message);
         public abstract void RegisterEvent(int code, MessageReceivedEventHandler func);
         public abstract void SetPWM(double duty);
