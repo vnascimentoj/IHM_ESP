@@ -33,11 +33,9 @@ namespace IHM_ESP.View
             this.label1 = new System.Windows.Forms.Label();
             this.label2 = new System.Windows.Forms.Label();
             this.label3 = new System.Windows.Forms.Label();
-            this.label4 = new System.Windows.Forms.Label();
             this.tb_ymax = new System.Windows.Forms.MaskedTextBox();
             this.tb_ymin = new System.Windows.Forms.MaskedTextBox();
             this.tb_mult = new System.Windows.Forms.MaskedTextBox();
-            this.maskedTextBox4 = new System.Windows.Forms.MaskedTextBox();
             this.btn_ok = new System.Windows.Forms.Button();
             this.tableLayoutPanel1.SuspendLayout();
             this.SuspendLayout();
@@ -50,11 +48,9 @@ namespace IHM_ESP.View
             this.tableLayoutPanel1.Controls.Add(this.label1, 0, 0);
             this.tableLayoutPanel1.Controls.Add(this.label2, 0, 1);
             this.tableLayoutPanel1.Controls.Add(this.label3, 0, 2);
-            this.tableLayoutPanel1.Controls.Add(this.label4, 0, 3);
             this.tableLayoutPanel1.Controls.Add(this.tb_ymax, 1, 0);
             this.tableLayoutPanel1.Controls.Add(this.tb_ymin, 1, 1);
             this.tableLayoutPanel1.Controls.Add(this.tb_mult, 1, 2);
-            this.tableLayoutPanel1.Controls.Add(this.maskedTextBox4, 1, 3);
             this.tableLayoutPanel1.Controls.Add(this.btn_ok, 1, 4);
             this.tableLayoutPanel1.Dock = System.Windows.Forms.DockStyle.Fill;
             this.tableLayoutPanel1.Location = new System.Drawing.Point(0, 0);
@@ -98,16 +94,6 @@ namespace IHM_ESP.View
             this.label3.TabIndex = 2;
             this.label3.Text = "Multiplicador:";
             // 
-            // label4
-            // 
-            this.label4.AutoSize = true;
-            this.label4.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.label4.Location = new System.Drawing.Point(3, 120);
-            this.label4.Name = "label4";
-            this.label4.Size = new System.Drawing.Size(166, 40);
-            this.label4.TabIndex = 3;
-            this.label4.Text = "label4";
-            // 
             // tb_ymax
             // 
             this.tb_ymax.Dock = System.Windows.Forms.DockStyle.Fill;
@@ -131,14 +117,6 @@ namespace IHM_ESP.View
             this.tb_mult.Name = "tb_mult";
             this.tb_mult.Size = new System.Drawing.Size(166, 20);
             this.tb_mult.TabIndex = 6;
-            // 
-            // maskedTextBox4
-            // 
-            this.maskedTextBox4.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.maskedTextBox4.Location = new System.Drawing.Point(175, 123);
-            this.maskedTextBox4.Name = "maskedTextBox4";
-            this.maskedTextBox4.Size = new System.Drawing.Size(166, 20);
-            this.maskedTextBox4.TabIndex = 7;
             // 
             // btn_ok
             // 
@@ -171,11 +149,9 @@ namespace IHM_ESP.View
         private System.Windows.Forms.Label label1;
         private System.Windows.Forms.Label label2;
         private System.Windows.Forms.Label label3;
-        private System.Windows.Forms.Label label4;
         private System.Windows.Forms.MaskedTextBox tb_ymax;
         private System.Windows.Forms.MaskedTextBox tb_ymin;
         private System.Windows.Forms.MaskedTextBox tb_mult;
-        private System.Windows.Forms.MaskedTextBox maskedTextBox4;
         private System.Windows.Forms.Button btn_ok;
     }
 }
