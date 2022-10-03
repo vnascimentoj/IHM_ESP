@@ -1,5 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
+using System.IO.Ports;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -27,10 +29,13 @@ namespace IHM_ESP
             READ_FIFO_QUEUE                 = 0x18
         }
 
+        /// <summary>
+        /// Calcula e retorna o CRC da mensagem.
+        /// </summary>
+        /// <param name="message">Mensagem que será usada para gerar o CRC</param>
+        /// <returns>CRC de 2 bytes (WORD)</returns>
         private static byte[] GetCRC(byte[] message)
         {
-            //Function expects a modbus message of any length as well as a 2 byte CRC array in which to 
-            //return the CRC values:
             byte[] CRC = new byte[2];
             ushort CRCFull = 0xFFFF;
             byte CRCHigh = 0xFF, CRCLow = 0xFF;
@@ -63,7 +68,7 @@ namespace IHM_ESP
         /// <param name="startingAddress">Endereço inicial a ser lido/escrito.</param>
         /// <param name="value"></param>
         /// <returns></returns>
-        public static byte[] SingleMessage(Device device, DataAccess fnCode, UInt16 startingAddress, UInt16 value)
+        public static byte[] BuildSingleMessage(Device device, DataAccess fnCode, UInt16 startingAddress, UInt16 value)
         {
             byte[] message = new byte[8];
 
@@ -74,7 +79,34 @@ namespace IHM_ESP
             message[4] = (byte)(value >> 8);
             message[5] = (byte)value;
             
-            return message.Concat(GetCRC(message)).ToArray();
+            byte[] crc = GetCRC(message);
+            message[6] = crc[0];
+            message[7] = crc[1];
+
+            return message;
+        }
+
+        public static byte[] GetResponse(SerialPort stream, int length)
+        {
+            byte[] response = new byte[length];
+            for (int i = 0; i < length; i++)
+            {
+                response[i] = (byte)stream.ReadByte();
+            }
+
+            return response;
+        }
+
+        /// <summary>
+        /// Calcula o CRC da resposta e verifica se a mensagem está corrompida.
+        /// </summary>
+        /// <param name="response">Mensagem para verificar</param>
+        /// <returns>true: se a resposta é válida, false: caso o CRC calculado esteja diferente do recebido.</returns>
+        public static bool CheckResponse(byte[] response)
+        {   
+            byte[] CRC = GetCRC(response);
+
+            return CRC[0] == response[response.Length - 2] && CRC[1] == response[response.Length - 1];
         }
 
     }
