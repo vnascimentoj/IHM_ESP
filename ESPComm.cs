@@ -30,13 +30,13 @@ namespace IHM_ESP
         public ESPComm(string comPort, int baudRate)
         {
             serialPort = new SerialPort(comPort, baudRate);
-            serialPort.DataReceived += serialPort_DataReceived;
+            //serialPort.DataReceived += serialPort_DataReceived;
             onMessageReceived = new Dictionary<int, MessageReceivedEventHandler>();
 
             serialPort.Open();
 
-            checkDuplicateMessageCodes();
-            printAllMessages();
+            //checkDuplicateMessageCodes();
+            //printAllMessages();
         }
 
         public override void RegisterEvent(int code, MessageReceivedEventHandler func)
@@ -44,72 +44,72 @@ namespace IHM_ESP
             onMessageReceived[code] = func;
         }
 
-        private void checkDuplicateMessageCodes()
-        {
-            Type[] types = GetInheritedClasses(typeof(Message));
+        //private void checkDuplicateMessageCodes()
+        //{
+        //    Type[] types = GetInheritedClasses(typeof(Message));
             
-            foreach(var type in types)
-            {
-                Message instance = (Message)Activator.CreateInstance(type);
+        //    foreach(var type in types)
+        //    {
+        //        Message instance = (Message)Activator.CreateInstance(type);
                 
-                if(codeMessagePair.ContainsKey(instance.code))
-                    Debug.Assert(!codeMessagePair.ContainsKey(instance.code), codeMessagePair[instance.code].Name + " e " + type.Name +
-                             " compartilham o mesmo código (" + instance.code.ToString() + ")");
+        //        if(codeMessagePair.ContainsKey(instance.code))
+        //            Debug.Assert(!codeMessagePair.ContainsKey(instance.code), codeMessagePair[instance.code].Name + " e " + type.Name +
+        //                     " compartilham o mesmo código (" + instance.code.ToString() + ")");
 
 
-                codeMessagePair[instance.code] = type;                
-            }
-        }
+        //        codeMessagePair[instance.code] = type;                
+        //    }
+        //}
 
-        public void printAllMessages()
-        {            
-            //foreach(var item in codeMessagePair)
-            foreach(var item in codeMessagePair.ToArray().OrderBy(i => i.Key))
-            {
-                Debug.WriteLine("Código: {0}\tMensagem {1}", item.Key, item.Value);
-            }
-        }
+        //public void printAllMessages()
+        //{            
+        //    //foreach(var item in codeMessagePair)
+        //    foreach(var item in codeMessagePair.ToArray().OrderBy(i => i.Key))
+        //    {
+        //        Debug.WriteLine("Código: {0}\tMensagem {1}", item.Key, item.Value);
+        //    }
+        //}
 
-        Type[] GetInheritedClasses(Type MyType)
-        {
-            //if you want the abstract classes drop the !TheType.IsAbstract but it is probably to instance so its a good idea to keep it.
-            return (Type[])Assembly.GetAssembly(MyType).GetTypes().Where(TheType => TheType.IsClass && !TheType.IsAbstract && TheType.IsSubclassOf(MyType)).ToArray();
-        }
+        //Type[] GetInheritedClasses(Type MyType)
+        //{
+        //    //if you want the abstract classes drop the !TheType.IsAbstract but it is probably to instance so its a good idea to keep it.
+        //    return (Type[])Assembly.GetAssembly(MyType).GetTypes().Where(TheType => TheType.IsClass && !TheType.IsAbstract && TheType.IsSubclassOf(MyType)).ToArray();
+        //}
 
-        private void serialPort_DataReceived(object sender, SerialDataReceivedEventArgs e)
-        {
-            int bytesToRead = serialPort.ReadByte();
-            if (bytesToRead == 0)
-                return;
+        //private void serialPort_DataReceived(object sender, SerialDataReceivedEventArgs e)
+        //{
+        //    int bytesToRead = serialPort.ReadByte();
+        //    if (bytesToRead == 0)
+        //        return;
 
-            if (!SpinWait.SpinUntil(() => serialPort.BytesToRead >= bytesToRead, 50))
-            {
-                serialPort.DiscardInBuffer();
-                return;
-            }
+        //    if (!SpinWait.SpinUntil(() => serialPort.BytesToRead >= bytesToRead, 50))
+        //    {
+        //        serialPort.DiscardInBuffer();
+        //        return;
+        //    }
 
-            byte[] buffer = new byte[bytesToRead];
-            serialPort.Read(buffer, 0, bytesToRead);
+        //    byte[] buffer = new byte[bytesToRead];
+        //    serialPort.Read(buffer, 0, bytesToRead);
 
-            int code = buffer[0];
-            int checksum = buffer[buffer.Length - 1];
+        //    int code = buffer[0];
+        //    int checksum = buffer[buffer.Length - 1];
 
-            int sum = bytesToRead;
-            for (int i = 0; i < bytesToRead - 1; i++)
-                sum += buffer[i];
+        //    int sum = bytesToRead;
+        //    for (int i = 0; i < bytesToRead - 1; i++)
+        //        sum += buffer[i];
             
-            Debug.WriteLine("Tam: " + bytesToRead.ToString() + " Msg: " + BitConverter.ToString(buffer));
+        //    Debug.WriteLine("Tam: " + bytesToRead.ToString() + " Msg: " + BitConverter.ToString(buffer));
 
-            if (checksum != (sum % 256))
-            {
-                Debug.WriteLine("Erro de checksum");
-                return;
-            }
+        //    if (checksum != (sum % 256))
+        //    {
+        //        Debug.WriteLine("Erro de checksum");
+        //        return;
+        //    }
             
-            // Encaminha mensagem recebida para a função adequada (se houver)
-            if (onMessageReceived.ContainsKey(code))
-                onMessageReceived[code](buffer);
-        }
+        //    // Encaminha mensagem recebida para a função adequada (se houver)
+        //    if (onMessageReceived.ContainsKey(code))
+        //        onMessageReceived[code](buffer);
+        //}
 
         public override double GetPWMDuty()
         {
@@ -186,6 +186,7 @@ namespace IHM_ESP
                     success = Modbus.CheckResponse(response);
                 }
             }
+            
             return success;
         }
 

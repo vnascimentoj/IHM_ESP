@@ -8,8 +8,6 @@ namespace IHM_ESP.Devices
 {
     class ESP32_USB
     {
-        public const byte Address = 0x01;
-
         /// <summary>
         /// Estado atual do dispositivo
         /// </summary>
@@ -42,8 +40,9 @@ namespace IHM_ESP.Devices
             PwmInitialValue = 5,
             PwmMinValue = 6,
             PwmMaxValue = 7,
-            SetPointRPM = 8,
-            DeviceState = 9
+            FieldPwm = 8,
+            SetPointRPM = 9,
+            DeviceState = 10
         }
     }
 }
