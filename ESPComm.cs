@@ -8,17 +8,15 @@ using System.Threading;
 
 namespace IHM_ESP
 {
-    public class ESPComm : IComm
+    public class ESPCom
     {
         const int MAX_PWM = 1023;
         SerialPort serialPort;
         
-        Dictionary<int, MessageReceivedEventHandler> onMessageReceived;
-        Dictionary<int, Type> codeMessagePair = new Dictionary<int, Type>();
         byte[] response;
 
         int messageIntervalInTicks;
-        public override bool IsOpen 
+        public bool IsOpen
         { 
             get 
             {
@@ -29,102 +27,26 @@ namespace IHM_ESP
             } 
         }
 
-        public ESPComm(string comPort, int baudRate)
+        public ESPCom(string comPort, int baudRate)
         {
             serialPort = new SerialPort(comPort, baudRate);
-            //serialPort.DataReceived += serialPort_DataReceived;
-            onMessageReceived = new Dictionary<int, MessageReceivedEventHandler>();
 
             serialPort.Open();
             messageIntervalInTicks = Convert.ToInt32(3.5 * Stopwatch.Frequency / baudRate);
 
-            //checkDuplicateMessageCodes();
-            //printAllMessages();
-        }
+        }     
 
-        public override void RegisterEvent(int code, MessageReceivedEventHandler func)
-        {
-            onMessageReceived[code] = func;
-        }
-
-        //private void checkDuplicateMessageCodes()
-        //{
-        //    Type[] types = GetInheritedClasses(typeof(Message));
-            
-        //    foreach(var type in types)
-        //    {
-        //        Message instance = (Message)Activator.CreateInstance(type);
-                
-        //        if(codeMessagePair.ContainsKey(instance.code))
-        //            Debug.Assert(!codeMessagePair.ContainsKey(instance.code), codeMessagePair[instance.code].Name + " e " + type.Name +
-        //                     " compartilham o mesmo código (" + instance.code.ToString() + ")");
-
-
-        //        codeMessagePair[instance.code] = type;                
-        //    }
-        //}
-
-        //public void printAllMessages()
-        //{            
-        //    //foreach(var item in codeMessagePair)
-        //    foreach(var item in codeMessagePair.ToArray().OrderBy(i => i.Key))
-        //    {
-        //        Debug.WriteLine("Código: {0}\tMensagem {1}", item.Key, item.Value);
-        //    }
-        //}
-
-        //Type[] GetInheritedClasses(Type MyType)
-        //{
-        //    //if you want the abstract classes drop the !TheType.IsAbstract but it is probably to instance so its a good idea to keep it.
-        //    return (Type[])Assembly.GetAssembly(MyType).GetTypes().Where(TheType => TheType.IsClass && !TheType.IsAbstract && TheType.IsSubclassOf(MyType)).ToArray();
-        //}
-
-        //private void serialPort_DataReceived(object sender, SerialDataReceivedEventArgs e)
-        //{
-        //    int bytesToRead = serialPort.ReadByte();
-        //    if (bytesToRead == 0)
-        //        return;
-
-        //    if (!SpinWait.SpinUntil(() => serialPort.BytesToRead >= bytesToRead, 50))
-        //    {
-        //        serialPort.DiscardInBuffer();
-        //        return;
-        //    }
-
-        //    byte[] buffer = new byte[bytesToRead];
-        //    serialPort.Read(buffer, 0, bytesToRead);
-
-        //    int code = buffer[0];
-        //    int checksum = buffer[buffer.Length - 1];
-
-        //    int sum = bytesToRead;
-        //    for (int i = 0; i < bytesToRead - 1; i++)
-        //        sum += buffer[i];
-            
-        //    Debug.WriteLine("Tam: " + bytesToRead.ToString() + " Msg: " + BitConverter.ToString(buffer));
-
-        //    if (checksum != (sum % 256))
-        //    {
-        //        Debug.WriteLine("Erro de checksum");
-        //        return;
-        //    }
-            
-        //    // Encaminha mensagem recebida para a função adequada (se houver)
-        //    if (onMessageReceived.ContainsKey(code))
-        //        onMessageReceived[code](buffer);
-        //}
-
-        public override double GetPWMDuty()
+        public double GetPWMDuty()
         {
             throw new NotImplementedException();
         }
 
-        public override int GetRPM()
+        public int GetRPM()
         {
             throw new NotImplementedException();
         }
 
-        public override void SetPWM(double duty)
+        public void SetPWM(double duty)
         {
             if (duty < 0 || duty > 1)
                 throw new Exception("duty: " + duty.ToString() + " está fora do intervalo: 0 <= duty <= 1");
@@ -138,12 +60,12 @@ namespace IHM_ESP
             sendMessage(setPwmMessage, setPwmMessage.Length);
         }
 
-        public override void SetPWM(int duty)
+        public void SetPWM(int duty)
         {
             SetPWM(Convert.ToDouble(duty) / 100);
         }
 
-        public override void SetRPM(int rpm)
+        public void SetRPM(int rpm)
         {
             byte[] setRpmMessage = Modbus.BuildSingleMessage(Modbus.Device.ESP_USB,
                                                              Modbus.DataAccess.WRITE_SINGLE_REGISTER,
@@ -153,7 +75,7 @@ namespace IHM_ESP
             sendMessage(setRpmMessage, setRpmMessage.Length);
         }
 
-        public override void Start()
+        public void Start()
         {
             byte[] startMessage = Modbus.BuildSingleMessage(Modbus.Device.ESP_USB,
                                                             Modbus.DataAccess.WRITE_SINGLE_REGISTER,
@@ -163,12 +85,12 @@ namespace IHM_ESP
             sendMessage(startMessage, startMessage.Length);
         }
 
-        public override void Stop()
+        public void Stop()
         {
             byte[] stopMessage = Modbus.BuildSingleMessage(Modbus.Device.ESP_USB,
-                                                            Modbus.DataAccess.WRITE_SINGLE_REGISTER,
-                                                            (UInt16)Devices.ESP32_USB.HoldingRegisters.DeviceState,
-                                                            (UInt16)Devices.ESP32_USB.DeviceState.Idle);
+                                                           Modbus.DataAccess.WRITE_SINGLE_REGISTER,
+                                                           (UInt16)Devices.ESP32_USB.HoldingRegisters.DeviceState,
+                                                           (UInt16)Devices.ESP32_USB.DeviceState.Idle);
 
             sendMessage(stopMessage, stopMessage.Length);
         }
@@ -197,40 +119,67 @@ namespace IHM_ESP
             return success;
         }
 
-        public override void SetMaxPwm(int duty)
+        public byte[] RequestData()
+        {   
+            // Response:
+            // Slave address    = 0x01          [1 byte ]
+            // Function code    = 0x04          [1 byte ]
+            // Bytes to follow  = 0x06          [1 byte ]
+            // Content          = data          [6 bytes]
+            // CRC              = crc           [2 bytes]
+            const UInt16 responseLength = 11;
+            const UInt16 numberOfRegistersRequested = 3;
+            byte[] data = null;
+
+
+            byte[] request = Modbus.BuildSingleMessage(Modbus.Device.ESP_USB,
+                                                       Modbus.DataAccess.READ_INPUT_REGISTER,
+                                                       (UInt16)Devices.ESP32_USB.InputRegisters.Voltage,
+                                                       numberOfRegistersRequested);
+
+            if (sendMessage(request, responseLength))
+            {
+                // Skip Slave address, fn code and bytes to follow
+                data = new ArraySegment<byte>(response, 3, 6).ToArray();
+            }
+
+            return data;
+        }
+
+        public void SetMaxPwm(int duty)
         {
             byte[] maxPwmMessage = Modbus.BuildSingleMessage(Modbus.Device.ESP_USB,
-                                                            Modbus.DataAccess.WRITE_SINGLE_REGISTER,
-                                                            (UInt16)Devices.ESP32_USB.HoldingRegisters.PwmMaxValue,
-                                                            (UInt16)duty);
+                                                             Modbus.DataAccess.WRITE_SINGLE_REGISTER,
+                                                             (UInt16)Devices.ESP32_USB.HoldingRegisters.PwmMaxValue,
+                                                             (UInt16)duty);
 
             sendMessage(maxPwmMessage, maxPwmMessage.Length);
         }
 
-        public override void SetMaxPwm(double duty)
+        public void SetMaxPwm(double duty)
         {
             int value = Convert.ToInt32(Math.Round(duty * MAX_PWM));
             SetMaxPwm(value);
         }
 
-        public override void SetMinPwm(int duty)
+        public void SetMinPwm(int duty)
         {
             byte[] minPwmMessage = Modbus.BuildSingleMessage(Modbus.Device.ESP_USB,
-                                                            Modbus.DataAccess.WRITE_SINGLE_REGISTER,
-                                                            (UInt16)Devices.ESP32_USB.HoldingRegisters.PwmMaxValue,
-                                                            (UInt16)duty);
+                                                             Modbus.DataAccess.WRITE_SINGLE_REGISTER,
+                                                             (UInt16)Devices.ESP32_USB.HoldingRegisters.PwmMaxValue,
+                                                             (UInt16)duty);
 
             sendMessage(minPwmMessage, minPwmMessage.Length);
         }
 
-        public override void SetMinPwm(double duty)
+        public void SetMinPwm(double duty)
         {
             int value = Convert.ToInt32(Math.Round(duty * MAX_PWM));
             SetMinPwm(value);
         }
 
 
-        public override void SetP(double kp)
+        public void SetP(double kp)
         {
             byte[] message = Modbus.BuildSingleMessage(Modbus.Device.ESP_USB,
                                                        Modbus.DataAccess.WRITE_SINGLE_REGISTER,
@@ -240,7 +189,7 @@ namespace IHM_ESP
             sendMessage(message, message.Length);
         }
 
-        public override void SetI(double ki)
+        public void SetI(double ki)
         {
             byte[] message = Modbus.BuildSingleMessage(Modbus.Device.ESP_USB,
                                                        Modbus.DataAccess.WRITE_SINGLE_REGISTER,
@@ -250,7 +199,7 @@ namespace IHM_ESP
             sendMessage(message, message.Length);
         }
 
-        public override void SetD(double kd)
+        public void SetD(double kd)
         {
             byte[] message = Modbus.BuildSingleMessage(Modbus.Device.ESP_USB,
                                                        Modbus.DataAccess.WRITE_SINGLE_REGISTER,
@@ -261,7 +210,7 @@ namespace IHM_ESP
         }
 
 
-        public override double GetCurrent()
+        public double GetCurrent()
         {
             int value = -1;
 
@@ -271,12 +220,12 @@ namespace IHM_ESP
                                                        1);
 
             if(sendMessage(message, message.Length - 2))
-                value = BitConverter.ToInt32(new ArraySegment<byte>(response, 6, 4).ToArray(), 0);
+                value = BitConverter.ToInt32(new ArraySegment<byte>(response, 3, 2).ToArray(), 0);
 
             return value;
         }
 
-        public override double GetMaxPwm()
+        public double GetMaxPwm()
         {
             double pwm = -1.0;
             byte[] message = Modbus.BuildSingleMessage(Modbus.Device.ESP_USB,
@@ -285,12 +234,12 @@ namespace IHM_ESP
                                                        1);
 
             if(sendMessage(message, message.Length - 2))
-                pwm = BitConverter.ToInt32(new ArraySegment<byte>(response, 6, 4).ToArray(), 0) / 1024;
+                pwm = BitConverter.ToInt32(new ArraySegment<byte>(response, 3, 2).ToArray(), 0) / 1024;
 
             return pwm;
         }
 
-        public override double GetMinPwm()
+        public double GetMinPwm()
         {
             double pwm = -1.0;
             byte[] message = Modbus.BuildSingleMessage(Modbus.Device.ESP_USB,
@@ -299,12 +248,12 @@ namespace IHM_ESP
                                                        1);
 
             if (sendMessage(message, message.Length - 2))
-                pwm = BitConverter.ToInt32(new ArraySegment<byte>(response, 6, 4).ToArray(), 0) / 1024;
+                pwm = BitConverter.ToInt32(new ArraySegment<byte>(response, 3, 2).ToArray(), 0) / 1024;
 
             return pwm;
         }
 
-        public override double GetKp()
+        public double GetKp()
         {
             double kp = -1.0;
             byte[] message = Modbus.BuildSingleMessage(Modbus.Device.ESP_USB,
@@ -313,12 +262,12 @@ namespace IHM_ESP
                                                        1);
 
             if (sendMessage(message, message.Length - 2))
-                kp = BitConverter.ToInt32(new ArraySegment<byte>(response, 6, 4).ToArray(), 0);
+                kp = BitConverter.ToInt32(new ArraySegment<byte>(response, 3, 2).ToArray(), 0);
 
             return kp;
         }
 
-        public override double GetKi()
+        public double GetKi()
         {
             double ki = -1.0;
             byte[] message = Modbus.BuildSingleMessage(Modbus.Device.ESP_USB,
@@ -327,12 +276,12 @@ namespace IHM_ESP
                                                        1);
 
             if (sendMessage(message, message.Length - 2))
-                ki = BitConverter.ToInt32(new ArraySegment<byte>(response, 6, 4).ToArray(), 0);
+                ki = BitConverter.ToInt32(new ArraySegment<byte>(response, 3, 2).ToArray(), 0);
 
             return ki;
         }
 
-        public override double GetKd()
+        public double GetKd()
         {
             double kd = -1.0;
             byte[] message = Modbus.BuildSingleMessage(Modbus.Device.ESP_USB,
@@ -341,12 +290,12 @@ namespace IHM_ESP
                                                        1);
 
             if (sendMessage(message, message.Length - 2))
-                kd = BitConverter.ToInt32(new ArraySegment<byte>(response, 6, 4).ToArray(), 0);
+                kd = BitConverter.ToInt32(new ArraySegment<byte>(response, 3, 2).ToArray(), 0);
 
             return kd;
         }
 
-        public override void Disconnect()
+        public void Disconnect()
         {
             if (serialPort != null)
                 serialPort.Close();

@@ -8,7 +8,7 @@ namespace IHM_ESP
 {
     public partial class Form1 : Form
     {
-        IComm comm;
+        ESPCom espCom;
         MainMenu mainMenu;
 
         ChartConfig speedConfig   = new ChartConfig() { multiplier = 1, x_max = 100, x_min = 0, y_max = 2200, y_min = 0 };
@@ -139,16 +139,16 @@ namespace IHM_ESP
         {
             //Envia dados pela serial
             int value = Convert.ToInt16(textBox_speed.Text);
-            comm.SetRPM(value);
+            espCom.SetRPM(value);
         }
 
         private void btn_set_pwm_Click(object sender, EventArgs e)
         {
             // Velocidade == 0 => ajuste manual 
             // velocidade != 0 => ajuste automático 
-            comm.SetRPM(0);
+            espCom.SetRPM(0);
             int value = Convert.ToInt16(textBox_pwm.Text);
-            comm.SetPWM(value);
+            espCom.SetPWM(value);
         }
 
 
@@ -173,11 +173,16 @@ namespace IHM_ESP
         }
 
         private Random random = new Random();
-        private void timer1_Tick(object sender, EventArgs e)
+        private void timer_update_Tick(object sender, EventArgs e)
         {
             //update_com_list();
             //AddSpeedData(new double[] { random.NextDouble() / 2 + 0.5 });
 
+            chart_roll();
+        }
+
+        private void chart_roll()
+        {
             if (cbox_roll_x.Checked)
             {
                 if (chart_speed.Series["Velocidade"].Points.Count + 20 > chart_speed.ChartAreas[0].AxisX.Maximum)
@@ -226,44 +231,17 @@ namespace IHM_ESP
                     }
                 }
             }
-        }
-
-        public void DataReceived(byte[] buffer)
-        {
-            if (this.InvokeRequired && !this.IsDisposed)
-            {
-                Action safeAdd = delegate { DataReceived(buffer); };
-                this.BeginInvoke(safeAdd);
-            }
-            else 
-            { 
-                const int codeLength = 1;
-                const int checksumLength = 1;
-                const int nData = 3;
-                int loop = (buffer.Length - codeLength - checksumLength) / (nData * sizeof(int));
-
-                for (int i = 0; i < loop; i++)
-                { 
-                    int rpm = (int)(BitConverter.ToInt32(buffer, i * 12 + codeLength) * speedConfig.multiplier);
-                    int voltage = (int)(BitConverter.ToInt32(buffer, i * 12 + codeLength + sizeof(int)) *voltageConfig.multiplier);
-                    int current = (int)(BitConverter.ToInt32(buffer, i * 12 + codeLength + sizeof(int) + sizeof(int)) * currentConfig.multiplier);
-
-                    chart_speed.Series["Velocidade"].Points.AddXY(chart_speed.Series["Velocidade"].Points.Count, rpm);
-                    chart_voltage.Series["Tensão"].Points.AddXY(chart_voltage.Series["Tensão"].Points.Count, voltage);
-                    chart_current.Series["Corrente"].Points.AddXY(chart_current.Series["Corrente"].Points.Count, current);
-                }
-            }
-        }
+        }        
 
         private void btn_connect_Click(object sender, EventArgs e)
         {
-            if (comm == null)
+            if (espCom == null)
             {
                 esp_connect();
             }else
             {
                 esp_disconnect();
-                comm = null;
+                espCom = null;
             }
 
             update_com_list();
@@ -271,8 +249,8 @@ namespace IHM_ESP
 
         private void esp_disconnect()
         {
-            if (comm != null)
-                comm.Disconnect();
+            if (espCom != null)
+                espCom.Disconnect();
 
             btn_set_speed.Enabled = false;
             btn_set_pwm.Enabled = false;
@@ -294,11 +272,7 @@ namespace IHM_ESP
                 return;
             }
                 
-            comm = new ESPComm(comPort, 115200);
-
-            // Cadastrando manualmente função de recebimento de mensagem de dados (rpm, tensão e corrente)
-            int code = new DataMessage().code;
-            comm.RegisterEvent(code, DataReceived);
+            espCom = new ESPCom(comPort, 115200);
 
             btn_set_speed.Enabled = true;
             btn_set_pwm.Enabled = true;
@@ -313,15 +287,18 @@ namespace IHM_ESP
             if(start)
             {
                 btn_start.Text = "Iniciar";
-                comm.Start();
+                espCom.Start();
+                timer_requestData.Enabled = true;
             }
             else
             {
                 btn_start.Text = "Parar";
-                comm.Stop();
+                espCom.Stop();
+                timer_requestData.Enabled = false;
             }
             System.Threading.Thread.Sleep(1000);
         }
+
         private void chart_speed_Click(object sender, EventArgs e)
         {
 
@@ -388,5 +365,20 @@ namespace IHM_ESP
             else
                 MessageBox.Show("Valor deve ser maior que zero.");
             }
+
+        private void timer_requestData_Tick(object sender, EventArgs e)
+        {
+            byte[] data = espCom.RequestData();
+            if (data != null)
+            {
+                int rpm = (int)(speedConfig.multiplier * (data[0] << 8 + data[1]));
+                int voltage = (int)(voltageConfig.multiplier * (data[2] << 8 + data[3]));
+                int current = (int)(currentConfig.multiplier * (data[4] << 8 + data[5]));
+
+                chart_speed.Series["Velocidade"].Points.AddXY(chart_speed.Series["Velocidade"].Points.Count, rpm);
+                chart_voltage.Series["Tensão"].Points.AddXY(chart_voltage.Series["Tensão"].Points.Count, voltage);
+                chart_current.Series["Corrente"].Points.AddXY(chart_current.Series["Corrente"].Points.Count, current);
+            }
+        }
     }
 }
