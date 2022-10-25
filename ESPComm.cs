@@ -16,6 +16,8 @@ namespace IHM_ESP
         Dictionary<int, MessageReceivedEventHandler> onMessageReceived;
         Dictionary<int, Type> codeMessagePair = new Dictionary<int, Type>();
         byte[] response;
+
+        int messageIntervalInTicks;
         public override bool IsOpen 
         { 
             get 
@@ -34,6 +36,7 @@ namespace IHM_ESP
             onMessageReceived = new Dictionary<int, MessageReceivedEventHandler>();
 
             serialPort.Open();
+            messageIntervalInTicks = Convert.ToInt32(3.5 * Stopwatch.Frequency / baudRate);
 
             //checkDuplicateMessageCodes();
             //printAllMessages();
@@ -186,7 +189,11 @@ namespace IHM_ESP
                     success = Modbus.CheckResponse(response);
                 }
             }
-            
+
+            // Aguarda o intervalo mínimo entre mensagens (tempo de 3.5 caracteres)
+            Stopwatch sw = Stopwatch.StartNew();
+            while (sw.ElapsedTicks < messageIntervalInTicks) ;
+
             return success;
         }
 

@@ -144,7 +144,9 @@ namespace IHM_ESP
 
         private void btn_set_pwm_Click(object sender, EventArgs e)
         {
-            //Envia dados pela serial
+            // Velocidade == 0 => ajuste manual 
+            // velocidade != 0 => ajuste automático 
+            comm.SetRPM(0);
             int value = Convert.ToInt16(textBox_pwm.Text);
             comm.SetPWM(value);
         }
