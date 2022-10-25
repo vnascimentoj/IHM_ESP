@@ -57,22 +57,53 @@ namespace IHM_ESP
 
         public class Record
         {
-            public double x { get; set; }
-            public double y { get; set; }
+            public double tempo { get; set; }
+            public double velocidade { get; set; }
+            public double tensao { get; set; }
+            public double corrente { get; set; }
         }
 
-        private void ExportCsv_Click(object sender, EventArgs e)
+        private void ExportCsv_Click(object sender, EventArgs e)        
         {
-            List<Record> records = new List<Record>();
-            foreach (var data in chart_speed.Series["Velocidade"].Points)
-                records.Add(new Record() { x = data.XValue, y = data.YValues[0] });
-            
+            SaveFileDialog saveFileDialog = new SaveFileDialog();
 
-            string filename = DateTime.Now.ToString("hh-mm") + ".csv";
-            using (var writer = new StreamWriter(filename))
-            using (var csv = new CsvHelper.CsvWriter(writer, CultureInfo.InvariantCulture))
-                csv.WriteRecords(records);
-                    
+            saveFileDialog.Filter = "csv files (*.csv)|*.csv";
+            saveFileDialog.RestoreDirectory = true;
+
+            if (saveFileDialog.ShowDialog() == DialogResult.OK)
+            {
+                // Intervalo entre amostras
+                double interval = timer_requestData.Interval / 1000.0;
+
+                List<Record> records = new List<Record>();
+
+                foreach (var data in chart_speed.Series["Velocidade"].Points)
+                    records.Add(new Record() 
+                    { 
+                        tempo = data.XValue * interval, 
+                        velocidade = data.YValues[0] 
+                    });
+
+                int i = 0;
+                foreach(var data in chart_voltage.Series["Tensão"].Points)
+                {
+                    records[i].tensao = data.YValues[0];
+                    i++;
+                }
+
+                i = 0;
+                foreach(var data in chart_current.Series["Corrente"].Points)
+                {
+                    records[i].corrente = data.YValues[0];
+                    i++;
+                }
+
+                string filename = saveFileDialog.FileName;
+                using (var writer = new StreamWriter(filename))
+                using (var csv = new CsvHelper.CsvWriter(writer, CultureInfo.InvariantCulture))
+                    csv.WriteRecords(records);              
+                
+            }
         }
 
         private void InitializeTextBox()
@@ -178,19 +209,7 @@ namespace IHM_ESP
 
             int value = Convert.ToInt16(textBox_pwm.Text);
             espCom.SetPWM(value);
-        }
-
-        // Função está adicionando em todos os gráficos para testes
-        public void AddSpeedData(double[] data)
-        {
-            foreach(var value in data)
-            {
-                chart_speed.Series["Velocidade"].Points.AddXY(chart_speed.Series["Velocidade"].Points.Count, Math.Round(value * chart_speed.ChartAreas[0].AxisY.Maximum));
-                chart_voltage.Series["Tensão"].Points.AddY(value * chart_voltage.ChartAreas[0].AxisY.Maximum); 
-                chart_current.Series["Corrente"].Points.AddY(value * chart_current.ChartAreas[0].AxisY.Maximum);
-            }
-
-        } // End AddSpeedData
+        }        
 
         private void update_com_list()
         {   
@@ -202,24 +221,21 @@ namespace IHM_ESP
         private Random random = new Random();
         private void timer_update_Tick(object sender, EventArgs e)
         {
-            //update_com_list();
-            //AddSpeedData(new double[] { random.NextDouble() / 2 + 0.5 });
 
             chart_roll();
-            UInt16[] valores = { 1000, 500, 500 };
+            //UInt16[] valores = { 100, 2, 500 };
             
-            List<byte> lista = new List<byte>();
-            for (int i = 0; i < valores.Length; i++)
-            {
-                lista.AddRange(BitConverter.GetBytes(valores[i]));
-            }
+            //List<byte> lista = new List<byte>();
+            //for (int i = 0; i < valores.Length; i++)
+            //{
+            //    lista.AddRange(BitConverter.GetBytes(valores[i]));
+            //}
 
-            byte[] data = lista.ToArray();
+            //byte[] data = lista.ToArray();
 
-
-            //int voltage = (int)(voltageConfig.multiplier * ((data[1] << 8) + data[0]));
-            //int current = (int)(currentConfig.multiplier * ((data[3] << 8) + data[2]));
-            //int rpm     = (int)(speedConfig.multiplier   * ((data[5] << 8) + data[4]));
+            //double voltage = voltageConfig.multiplier * ((data[1] << 8) + data[0]);
+            //double current = currentConfig.multiplier * ((data[3] << 8) + data[2]);
+            //double rpm     = speedConfig.multiplier   * ((data[5] << 8) + data[4]);
 
             //chart_speed.Series["Velocidade"].Points.AddXY(chart_speed.Series["Velocidade"].Points.Count, rpm);
             //chart_voltage.Series["Tensão"].Points.AddXY(chart_voltage.Series["Tensão"].Points.Count, voltage);
@@ -418,9 +434,9 @@ namespace IHM_ESP
             byte[] data = espCom.RequestData();
             if (data != null)
             {   
-                int voltage = (int)(voltageConfig.multiplier * ((data[1] << 8) + data[0]));
-                int current = (int)(currentConfig.multiplier * ((data[3] << 8) + data[2]));
-                int rpm     = (int)(speedConfig.multiplier * ((data[5] << 8) + data[4]));
+                double voltage = voltageConfig.multiplier * ((data[1] << 8) + data[0]);
+                double current = currentConfig.multiplier * ((data[3] << 8) + data[2]);
+                double rpm     = speedConfig.multiplier   * ((data[5] << 8) + data[4]);
 
                 chart_speed.Series["Velocidade"].Points.AddXY(chart_speed.Series["Velocidade"].Points.Count, rpm);
                 chart_voltage.Series["Tensão"].Points.AddXY(chart_voltage.Series["Tensão"].Points.Count, voltage);
