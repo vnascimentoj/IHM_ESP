@@ -11,11 +11,10 @@ namespace IHM_ESP
     public class ESPCom
     {
         const int MAX_PWM = 1023;
-        SerialPort serialPort;
+        private readonly SerialPort serialPort;
         
         byte[] response;
-
-        int messageIntervalInTicks;
+        readonly int messageIntervalInTicks;
         public bool IsOpen
         { 
             get 
@@ -57,7 +56,7 @@ namespace IHM_ESP
                                                              (UInt16)Devices.ESP32_USB.HoldingRegisters.Pwm, 
                                                              (UInt16)value);
 
-            sendMessage(setPwmMessage, setPwmMessage.Length);
+            SendMessage(setPwmMessage, setPwmMessage.Length);
         }
 
         public void SetPWM(int duty)
@@ -72,7 +71,7 @@ namespace IHM_ESP
                                                              (UInt16)Devices.ESP32_USB.HoldingRegisters.SetPointRPM,
                                                              (UInt16)rpm);
 
-            sendMessage(setRpmMessage, setRpmMessage.Length);
+            SendMessage(setRpmMessage, setRpmMessage.Length);
         }
 
         public void Start()
@@ -82,7 +81,7 @@ namespace IHM_ESP
                                                             (UInt16)Devices.ESP32_USB.HoldingRegisters.DeviceState,
                                                             (UInt16)Devices.ESP32_USB.DeviceState.Running);
 
-            sendMessage(startMessage, startMessage.Length);
+            SendMessage(startMessage, startMessage.Length);
         }
 
         public void Stop()
@@ -92,10 +91,10 @@ namespace IHM_ESP
                                                            (UInt16)Devices.ESP32_USB.HoldingRegisters.DeviceState,
                                                            (UInt16)Devices.ESP32_USB.DeviceState.Idle);
 
-            sendMessage(stopMessage, stopMessage.Length);
+            SendMessage(stopMessage, stopMessage.Length);
         }
 
-        protected bool sendMessage(byte[] message, int responseLength)
+        protected bool SendMessage(byte[] message, int responseLength)
         {
             bool success = false;
             if(serialPort.IsOpen)
@@ -103,7 +102,10 @@ namespace IHM_ESP
                 serialPort.Write(message, 0, message.Length);
 
                 if (!SpinWait.SpinUntil(() => serialPort.BytesToRead >= responseLength, 50))
-                    serialPort.DiscardInBuffer();
+                {
+                    Debug.WriteLine(serialPort.ReadExisting());
+                    //serialPort.DiscardInBuffer();
+                }   
                 else
                 {
                     response = Modbus.GetResponse(serialPort, responseLength);
@@ -137,7 +139,7 @@ namespace IHM_ESP
                                                        (UInt16)Devices.ESP32_USB.InputRegisters.Voltage,
                                                        numberOfRegistersRequested);
 
-            if (sendMessage(request, responseLength))
+            if (SendMessage(request, responseLength))
             {
                 // Skip Slave address, fn code and bytes to follow
                 data = new ArraySegment<byte>(response, 3, 6).ToArray();
@@ -153,7 +155,7 @@ namespace IHM_ESP
                                                              (UInt16)Devices.ESP32_USB.HoldingRegisters.PwmMaxValue,
                                                              (UInt16)duty);
 
-            sendMessage(maxPwmMessage, maxPwmMessage.Length);
+            SendMessage(maxPwmMessage, maxPwmMessage.Length);
         }
 
         public void SetMaxPwm(double duty)
@@ -169,7 +171,7 @@ namespace IHM_ESP
                                                              (UInt16)Devices.ESP32_USB.HoldingRegisters.PwmMaxValue,
                                                              (UInt16)duty);
 
-            sendMessage(minPwmMessage, minPwmMessage.Length);
+            SendMessage(minPwmMessage, minPwmMessage.Length);
         }
 
         public void SetMinPwm(double duty)
@@ -186,7 +188,7 @@ namespace IHM_ESP
                                                        (UInt16)Devices.ESP32_USB.HoldingRegisters.Kp,
                                                        (UInt16)kp);
 
-            sendMessage(message, message.Length);
+            SendMessage(message, message.Length);
         }
 
         public void SetI(double ki)
@@ -196,7 +198,7 @@ namespace IHM_ESP
                                                        (UInt16)Devices.ESP32_USB.HoldingRegisters.Ki,
                                                        (UInt16)ki);
 
-            sendMessage(message, message.Length);
+            SendMessage(message, message.Length);
         }
 
         public void SetD(double kd)
@@ -206,7 +208,7 @@ namespace IHM_ESP
                                                        (UInt16)Devices.ESP32_USB.HoldingRegisters.Kd,
                                                        (UInt16)kd);
 
-            sendMessage(message, message.Length);
+            SendMessage(message, message.Length);
         }
 
 
@@ -219,7 +221,7 @@ namespace IHM_ESP
                                                        (UInt16)Devices.ESP32_USB.InputRegisters.Current,
                                                        1);
 
-            if(sendMessage(message, message.Length - 2))
+            if(SendMessage(message, message.Length - 2))
                 value = BitConverter.ToInt32(new ArraySegment<byte>(response, 3, 2).ToArray(), 0);
 
             return value;
@@ -233,7 +235,7 @@ namespace IHM_ESP
                                                        (UInt16)Devices.ESP32_USB.HoldingRegisters.PwmMaxValue,
                                                        1);
 
-            if(sendMessage(message, message.Length - 2))
+            if(SendMessage(message, message.Length - 2))
                 pwm = BitConverter.ToInt32(new ArraySegment<byte>(response, 3, 2).ToArray(), 0) / 1024;
 
             return pwm;
@@ -247,7 +249,7 @@ namespace IHM_ESP
                                                        (UInt16)Devices.ESP32_USB.HoldingRegisters.PwmMinValue,
                                                        1);
 
-            if (sendMessage(message, message.Length - 2))
+            if (SendMessage(message, message.Length - 2))
                 pwm = BitConverter.ToInt32(new ArraySegment<byte>(response, 3, 2).ToArray(), 0) / 1024;
 
             return pwm;
@@ -261,7 +263,7 @@ namespace IHM_ESP
                                                        (UInt16)Devices.ESP32_USB.HoldingRegisters.Kp,
                                                        1);
 
-            if (sendMessage(message, message.Length - 2))
+            if (SendMessage(message, message.Length - 2))
                 kp = BitConverter.ToInt32(new ArraySegment<byte>(response, 3, 2).ToArray(), 0);
 
             return kp;
@@ -275,7 +277,7 @@ namespace IHM_ESP
                                                        (UInt16)Devices.ESP32_USB.HoldingRegisters.Ki,
                                                        1);
 
-            if (sendMessage(message, message.Length - 2))
+            if (SendMessage(message, message.Length - 2))
                 ki = BitConverter.ToInt32(new ArraySegment<byte>(response, 3, 2).ToArray(), 0);
 
             return ki;
@@ -289,7 +291,7 @@ namespace IHM_ESP
                                                        (UInt16)Devices.ESP32_USB.HoldingRegisters.Kd,
                                                        1);
 
-            if (sendMessage(message, message.Length - 2))
+            if (SendMessage(message, message.Length - 2))
                 kd = BitConverter.ToInt32(new ArraySegment<byte>(response, 3, 2).ToArray(), 0);
 
             return kd;

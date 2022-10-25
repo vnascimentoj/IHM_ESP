@@ -2,21 +2,21 @@
 {
     class MotorStateMessage : Message
     {
-        public override byte code => 99;
+        public override byte Code => 99;
     }
 
     class StartMessage : Message
     {
-        public override byte code => 19;
+        public override byte Code => 19;
     }
 
     class StopMessage : Message
     {
-        public override byte code => 20;
+        public override byte Code => 20;
     }
     class DataMessage : Message
     {
-        public override byte code => 09;
+        public override byte Code => 09;
     }
 
     #region Setters  // Ok
@@ -26,18 +26,18 @@
         public SetPwmMessage() { }
         public SetPwmMessage(byte[] data) : base(data) {}
 
-        public override byte code => 01;
+        public override byte Code => 01;
     }
     class SetRpmMessage : Message // Ok
     {
         public SetRpmMessage() { }
         public SetRpmMessage(int rpm)
         {
-            data = System.BitConverter.GetBytes(rpm);
-            System.Array.Reverse(data);
+            Data = System.BitConverter.GetBytes(rpm);
+            System.Array.Reverse(Data);
         }
 
-        public override byte code => 03;
+        public override byte Code => 03;
     }
     class SetMaxPwmMessage : Message // Ok
     {
@@ -45,78 +45,78 @@
 
         public SetMaxPwmMessage(int duty)
         {
-            data = System.BitConverter.GetBytes(duty);
-            System.Array.Reverse(data);
+            Data = System.BitConverter.GetBytes(duty);
+            System.Array.Reverse(Data);
         }
 
-        public override byte code => 08;
+        public override byte Code => 08;
     }
     class SetMinPwmMessage : Message // Ok
     {
         public SetMinPwmMessage() { }
         public SetMinPwmMessage(int duty)
         {
-            data = System.BitConverter.GetBytes(duty);
-            System.Array.Reverse(data);
+            Data = System.BitConverter.GetBytes(duty);
+            System.Array.Reverse(Data);
         }
 
-        public override byte code => 11;
+        public override byte Code => 11;
     }
     class SetMaxCurrentMessage : Message // Ok
     {
 
-        public override byte code => 05;
+        public override byte Code => 05;
     }
     class SetPMessage : Message // Ok
     {
-        public override byte code => 16;
+        public override byte Code => 16;
     }
     class SetIMessage : Message // Ok
     {
-        public override byte code => 17;
+        public override byte Code => 17;
     }
     class SetDMessage : Message // Ok
     {
-        public override byte code => 18;
+        public override byte Code => 18;
     }
     #endregion
 
     #region Getters // Ok
     class GetPwmMessage : Message // Ok
     {
-        public override byte code => 02;
+        public override byte Code => 02;
     }
     class GetRpmMessage : Message // Ok
     {
-        public override byte code => 04;
+        public override byte Code => 04;
     }
     class GetMaxCurrentMessage : Message // Ok
     {
-        public override byte code => 06;
+        public override byte Code => 06;
     }
     class GetCurrentMessage : Message // Ok
     {
-        public override byte code => 07;
+        public override byte Code => 07;
     }
     class GetMaxPwmMessage : Message // Ok
     {
-        public override byte code => 10;
+        public override byte Code => 10;
     }
     class GetMinPwmMessage : Message // Ok
     {
-        public override byte code => 12;
+        public override byte Code => 12;
     }
     class GetPMessage : Message // Ok
     {
-        public override byte code => 13;
+        public override byte Code => 13;
     }
     class GetIMessage : Message // Ok
     {
-        public override byte code => 14;
+        public override byte Code => 14;
     }
     class GetDMessage : Message // Ok
     {
-        public override byte code => 15;
+        public override byte Code => 15;
     }
 
     #endregion

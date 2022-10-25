@@ -1,5 +1,10 @@
 ﻿using System;
+using System.Collections;
+using System.Collections.Generic;
+using System.Diagnostics;
 using System.Drawing;
+using System.Globalization;
+using System.IO;
 using System.IO.Ports;
 using System.Windows.Forms;
 using System.Windows.Forms.DataVisualization.Charting;
@@ -37,14 +42,37 @@ namespace IHM_ESP
         {
             mainMenu = new MainMenu();
             MenuItem File = mainMenu.MenuItems.Add("&Arquivo");
-            File.MenuItems.Add(new MenuItem("&Exportar gráficos"));
-            File.MenuItems.Add(new MenuItem("&Exportar .csv"));
-            //File.MenuItems.Add(new MenuItem("&Exit"));
+            //File.MenuItems.Add(new MenuItem("&Exportar gráficos"));
+            MenuItem exportCsv = new MenuItem("&Exportar .csv");
+            exportCsv.Click += ExportCsv_Click;
+            File.MenuItems.Add(exportCsv);
+            
+            //this.Menu = mainMenu;
+
+            MenuItem settings = mainMenu.MenuItems.Add("&Ajustes");
+            settings.MenuItems.Add(new MenuItem("&Ajustes PID"));
             this.Menu = mainMenu;
-            MenuItem About = mainMenu.MenuItems.Add("&Ajustes");
-            About.MenuItems.Add(new MenuItem("&Ajustes PID"));
-            this.Menu = mainMenu;
-            //mainMenu.GetForm().BackColor = Color.Indigo;
+            
+        }
+
+        public class Record
+        {
+            public double x { get; set; }
+            public double y { get; set; }
+        }
+
+        private void ExportCsv_Click(object sender, EventArgs e)
+        {
+            List<Record> records = new List<Record>();
+            foreach (var data in chart_speed.Series["Velocidade"].Points)
+                records.Add(new Record() { x = data.XValue, y = data.YValues[0] });
+            
+
+            string filename = DateTime.Now.ToString("hh-mm") + ".csv";
+            using (var writer = new StreamWriter(filename))
+            using (var csv = new CsvHelper.CsvWriter(writer, CultureInfo.InvariantCulture))
+                csv.WriteRecords(records);
+                    
         }
 
         private void InitializeTextBox()
@@ -147,17 +175,16 @@ namespace IHM_ESP
             // Velocidade == 0 => ajuste manual 
             // velocidade != 0 => ajuste automático 
             espCom.SetRPM(0);
+
             int value = Convert.ToInt16(textBox_pwm.Text);
             espCom.SetPWM(value);
         }
-
 
         // Função está adicionando em todos os gráficos para testes
         public void AddSpeedData(double[] data)
         {
             foreach(var value in data)
             {
-                //chart_speed.Series["Velocidade"].Points.AddY(Math.Round(value * chart_speed.ChartAreas[0].AxisY.Maximum));
                 chart_speed.Series["Velocidade"].Points.AddXY(chart_speed.Series["Velocidade"].Points.Count, Math.Round(value * chart_speed.ChartAreas[0].AxisY.Maximum));
                 chart_voltage.Series["Tensão"].Points.AddY(value * chart_voltage.ChartAreas[0].AxisY.Maximum); 
                 chart_current.Series["Corrente"].Points.AddY(value * chart_current.ChartAreas[0].AxisY.Maximum);
@@ -179,6 +206,24 @@ namespace IHM_ESP
             //AddSpeedData(new double[] { random.NextDouble() / 2 + 0.5 });
 
             chart_roll();
+            UInt16[] valores = { 1000, 500, 500 };
+            
+            List<byte> lista = new List<byte>();
+            for (int i = 0; i < valores.Length; i++)
+            {
+                lista.AddRange(BitConverter.GetBytes(valores[i]));
+            }
+
+            byte[] data = lista.ToArray();
+
+
+            //int voltage = (int)(voltageConfig.multiplier * ((data[1] << 8) + data[0]));
+            //int current = (int)(currentConfig.multiplier * ((data[3] << 8) + data[2]));
+            //int rpm     = (int)(speedConfig.multiplier   * ((data[5] << 8) + data[4]));
+
+            //chart_speed.Series["Velocidade"].Points.AddXY(chart_speed.Series["Velocidade"].Points.Count, rpm);
+            //chart_voltage.Series["Tensão"].Points.AddXY(chart_voltage.Series["Tensão"].Points.Count, voltage);
+            //chart_current.Series["Corrente"].Points.AddXY(chart_current.Series["Corrente"].Points.Count, current);
         }
 
         private void chart_roll()
@@ -268,6 +313,7 @@ namespace IHM_ESP
             }
             catch(Exception ex)
             {
+                Debug.WriteLine(ex);
                 MessageBox.Show("Selecione uma porta válida.");
                 return;
             }
@@ -366,21 +412,28 @@ namespace IHM_ESP
                 MessageBox.Show("Valor deve ser maior que zero.");
             }
 
+        private bool messageError = false;
         private void timer_requestData_Tick(object sender, EventArgs e)
         {
             byte[] data = espCom.RequestData();
             if (data != null)
-            {
-                int voltage = (int)(speedConfig.multiplier * (data[0] << 8 + data[1]));
-                int current = (int)(voltageConfig.multiplier * (data[2] << 8 + data[3]));
-                int rpm = (int)(currentConfig.multiplier * (data[4] << 8 + data[5]));
+            {   
+                int voltage = (int)(voltageConfig.multiplier * ((data[1] << 8) + data[0]));
+                int current = (int)(currentConfig.multiplier * ((data[3] << 8) + data[2]));
+                int rpm     = (int)(speedConfig.multiplier * ((data[5] << 8) + data[4]));
 
                 chart_speed.Series["Velocidade"].Points.AddXY(chart_speed.Series["Velocidade"].Points.Count, rpm);
                 chart_voltage.Series["Tensão"].Points.AddXY(chart_voltage.Series["Tensão"].Points.Count, voltage);
                 chart_current.Series["Corrente"].Points.AddXY(chart_current.Series["Corrente"].Points.Count, current);
+
+                //messageError = false;
             }
-            else
-                MessageBox.Show("Mensagem nula");
+            else if(!messageError)
+            {
+                MessageBox.Show("Mensagem de leitura nula");
+                messageError = true;
+            }
+                
         }
     }
 }

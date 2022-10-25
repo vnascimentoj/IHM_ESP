@@ -7,29 +7,30 @@ namespace IHM_ESP
     public abstract class Message
     {   
         const int CHECKSUM_SIZE = 1; //Em bytes
-        public byte length { get; protected set; }
-        public abstract byte code { get; }
-        public byte[] data { get; protected set; }
+        public byte Length { get; protected set; }
+        public abstract byte Code { get; }
+        public byte[] Data { get; protected set; }
         byte checkSum;
 
         public Message() { }
         public Message(byte[] data)
         {
-            this.data = data;
+            this.Data = data;
         }
 
         public byte[] Encode()
         {
-            List<byte> buffer = new List<byte>();
+            List<byte> buffer = new List<byte>
+            {
+                Code
+            };
 
-            buffer.Add(code);
-
-            if(data != null)
-                foreach (byte d in data)
+            if (Data != null)
+                foreach (byte d in Data)
                     buffer.Add(d);
 
-            length = Convert.ToByte(buffer.Count + CHECKSUM_SIZE);
-            buffer.Insert(0, length);
+            Length = Convert.ToByte(buffer.Count + CHECKSUM_SIZE);
+            buffer.Insert(0, Length);
 
             checkSum = Convert.ToByte(buffer.Sum(b => b) % 256);
             buffer.Add(checkSum);
@@ -43,7 +44,7 @@ namespace IHM_ESP
 
         public virtual void MessageReceived(Message message)
         {
-            if (OnMessageReceived != null) OnMessageReceived(message);
+            OnMessageReceived?.Invoke(message);
         }
         #endregion
     }
