@@ -371,14 +371,16 @@ namespace IHM_ESP
             byte[] data = espCom.RequestData();
             if (data != null)
             {
-                int rpm = (int)(speedConfig.multiplier * (data[0] << 8 + data[1]));
-                int voltage = (int)(voltageConfig.multiplier * (data[2] << 8 + data[3]));
-                int current = (int)(currentConfig.multiplier * (data[4] << 8 + data[5]));
+                int voltage = (int)(speedConfig.multiplier * (data[0] << 8 + data[1]));
+                int current = (int)(voltageConfig.multiplier * (data[2] << 8 + data[3]));
+                int rpm = (int)(currentConfig.multiplier * (data[4] << 8 + data[5]));
 
                 chart_speed.Series["Velocidade"].Points.AddXY(chart_speed.Series["Velocidade"].Points.Count, rpm);
                 chart_voltage.Series["Tensão"].Points.AddXY(chart_voltage.Series["Tensão"].Points.Count, voltage);
                 chart_current.Series["Corrente"].Points.AddXY(chart_current.Series["Corrente"].Points.Count, current);
             }
+            else
+                MessageBox.Show("Mensagem nula");
         }
     }
 }
