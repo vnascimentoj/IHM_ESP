@@ -103,7 +103,7 @@ namespace IHM_ESP
 
                 if (!SpinWait.SpinUntil(() => serialPort.BytesToRead >= responseLength, 50))
                 {
-                    Debug.WriteLine(serialPort.ReadExisting());
+                    response = Modbus.GetResponse(serialPort, serialPort.BytesToRead);
                     //serialPort.DiscardInBuffer();
                 }   
                 else
