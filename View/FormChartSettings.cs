@@ -10,10 +10,10 @@ using System.Windows.Forms;
 
 namespace IHM_ESP.View
 {
-    public partial class FormChartConfig : Form
+    public partial class FormChartSettings : Form
     {
         ChartConfig config;
-        public FormChartConfig(ChartConfig chartConfig)
+        public FormChartSettings(ChartConfig chartConfig)
         {
             InitializeComponent();
             config = chartConfig;

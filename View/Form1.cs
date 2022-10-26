@@ -1,11 +1,13 @@
 ﻿using System;
 using System.Collections;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Drawing;
 using System.Globalization;
 using System.IO;
 using System.IO.Ports;
+using System.Linq;
 using System.Windows.Forms;
 using System.Windows.Forms.DataVisualization.Charting;
 
@@ -73,7 +75,7 @@ namespace IHM_ESP
             if (saveFileDialog.ShowDialog() == DialogResult.OK)
             {
                 // Intervalo entre amostras
-                double interval = timer_requestData.Interval / 1000.0;
+                double interval = 1;// timer_requestData.Interval / 1000.0;
 
                 List<Record> records = new List<Record>();
 
@@ -196,7 +198,6 @@ namespace IHM_ESP
 
         private void btn_set_speed_Click(object sender, EventArgs e)
         {
-            //Envia dados pela serial
             int value = Convert.ToInt16(textBox_speed.Text);
             espCom.SetRPM(value);
         }
@@ -221,25 +222,24 @@ namespace IHM_ESP
         private Random random = new Random();
         private void timer_update_Tick(object sender, EventArgs e)
         {
+            chart_current.Series.ResumeUpdates();
+            chart_voltage.Series.ResumeUpdates();
+            chart_speed.Series.ResumeUpdates();
 
+            fill_series(chart_speed.Series["Velocidade"], queue_rpm);
+            fill_series(chart_voltage.Series["Tensão"], queue_voltage);
+            fill_series(chart_current.Series["Corrente"], queue_current);
             chart_roll();
-            //UInt16[] valores = { 100, 2, 500 };
-            
-            //List<byte> lista = new List<byte>();
-            //for (int i = 0; i < valores.Length; i++)
-            //{
-            //    lista.AddRange(BitConverter.GetBytes(valores[i]));
-            //}
+            chart_current.Series.SuspendUpdates();
+            chart_voltage.Series.SuspendUpdates();
+            chart_speed.Series.SuspendUpdates();
+        }
 
-            //byte[] data = lista.ToArray();
-
-            //double voltage = voltageConfig.multiplier * ((data[1] << 8) + data[0]);
-            //double current = currentConfig.multiplier * ((data[3] << 8) + data[2]);
-            //double rpm     = speedConfig.multiplier   * ((data[5] << 8) + data[4]);
-
-            //chart_speed.Series["Velocidade"].Points.AddXY(chart_speed.Series["Velocidade"].Points.Count, rpm);
-            //chart_voltage.Series["Tensão"].Points.AddXY(chart_voltage.Series["Tensão"].Points.Count, voltage);
-            //chart_current.Series["Corrente"].Points.AddXY(chart_current.Series["Corrente"].Points.Count, current);
+        private void fill_series(Series series, ConcurrentQueue<double> queue)
+        {
+            double result = 0;
+            while (queue.TryDequeue(out result))
+                series.Points.AddXY(series.Points.Count, result);
         }
 
         private void chart_roll()
@@ -315,6 +315,7 @@ namespace IHM_ESP
 
             btn_set_speed.Enabled = false;
             btn_set_pwm.Enabled = false;
+            btn_start.Enabled = false;
 
             btn_connect.Text = "Conectar";
             comboBox1.ResetText();
@@ -338,29 +339,33 @@ namespace IHM_ESP
 
             btn_set_speed.Enabled = true;
             btn_set_pwm.Enabled = true;
+            btn_start.Enabled = true;
 
             btn_connect.Text = "Desconectar";
         }
 
-        bool start = false;
+        System.Threading.Thread thread_request_data = null;
+
         private void btn_start_Click(object sender, EventArgs e)
         {
-            start = !start;
-            if(start)
+            if(btn_start.Text == "Iniciar")
             {
-                btn_start.Text = "Iniciar";
+                btn_start.Text = "Parar";
                 espCom.Start();
-                timer_requestData.Enabled = true;
+                doRequest = true;
+                thread_request_data = new System.Threading.Thread(thread_request_data_fn);
+                thread_request_data.Start();
             }
             else
             {
-                btn_start.Text = "Parar";
+                btn_start.Text = "Iniciar";
                 espCom.Stop();
-                timer_requestData.Enabled = false;
+                doRequest = false;
             }
             System.Threading.Thread.Sleep(1000);
         }
 
+        #region Chart_clicks
         private void chart_speed_Click(object sender, EventArgs e)
         {
 
@@ -378,25 +383,25 @@ namespace IHM_ESP
 
         private void chart_speed_DoubleClick(object sender, EventArgs e)
         {
-            Form form = new View.FormChartConfig(speedConfig);
+            Form form = new View.FormChartSettings(speedConfig);
             form.ShowDialog();
             chart_update(chart_speed, speedConfig);
         }
 
         private void chart_voltage_DoubleClick(object sender, EventArgs e)
         {
-            Form form = new View.FormChartConfig(voltageConfig);
+            Form form = new View.FormChartSettings(voltageConfig);
             form.ShowDialog();
             chart_update(chart_voltage, voltageConfig);
         }
 
         private void chart_current_DoubleClick(object sender, EventArgs e)
         {
-            Form form = new View.FormChartConfig(currentConfig);
+            Form form = new View.FormChartSettings(currentConfig);
             form.ShowDialog();
             chart_update(chart_current, currentConfig);
         }
-
+        #endregion
         private void chart_update(System.Windows.Forms.DataVisualization.Charting.Chart chart, ChartConfig config)
         {   
             chart.ChartAreas[0].AxisY.Minimum = config.y_min;
@@ -428,28 +433,66 @@ namespace IHM_ESP
                 MessageBox.Show("Valor deve ser maior que zero.");
             }
 
+        private bool doRequest = false;
         private bool messageError = false;
-        private void timer_requestData_Tick(object sender, EventArgs e)
+        List<double> list_rpm = new List<double>();
+        List<double> list_voltage = new List<double>();
+        List<double> list_current = new List<double>();
+
+        ConcurrentQueue<double> queue_rpm = new ConcurrentQueue<double>();
+        ConcurrentQueue<double> queue_voltage = new ConcurrentQueue<double>();
+        ConcurrentQueue<double> queue_current = new ConcurrentQueue<double>();
+        private void thread_request_data_fn()
         {
-            byte[] data = espCom.RequestData();
-            if (data != null)
+            Stopwatch stopwatch = Stopwatch.StartNew();
+            while (doRequest)
             {   
-                double voltage = voltageConfig.multiplier * ((data[1] << 8) + data[0]);
-                double current = currentConfig.multiplier * ((data[3] << 8) + data[2]);
-                double rpm     = speedConfig.multiplier   * ((data[5] << 8) + data[4]);
-
-                chart_speed.Series["Velocidade"].Points.AddXY(chart_speed.Series["Velocidade"].Points.Count, rpm);
-                chart_voltage.Series["Tensão"].Points.AddXY(chart_voltage.Series["Tensão"].Points.Count, voltage);
-                chart_current.Series["Corrente"].Points.AddXY(chart_current.Series["Corrente"].Points.Count, current);
-
-                //messageError = false;
-            }
-            else if(!messageError)
-            {
-                MessageBox.Show("Mensagem de leitura nula");
-                messageError = true;
-            }
+                byte[] data = espCom.RequestData();
                 
+                if (data != null)
+                {   
+                    double voltage = voltageConfig.multiplier * ((data[0] << 8) + data[1]);
+                    double current = currentConfig.multiplier * ((data[2] << 8) + data[3]);
+                    double rpm     = speedConfig.multiplier   * ((data[4] << 8) + data[5]);
+
+                    queue_voltage.Enqueue(voltage);
+                    queue_current.Enqueue(current);
+                    queue_rpm.Enqueue(rpm);
+
+                    //messageError = false;
+                }
+                //else if(!messageError)
+                //{
+                //    MessageBox.Show("Mensagem de leitura nula");
+                //    messageError = true;
+                //}
+                //simulaGrafico();
+                while (stopwatch.ElapsedMilliseconds < 10) ;
+                stopwatch.Restart();
+            }
+            Debug.Write("thread_request_data_fn finished");
         }
+
+        private void simulaGrafico()
+        {
+            UInt16[] valores = { 100, 2, 500 };
+
+            List<byte> lista = new List<byte>();
+            for (int i = 0; i < valores.Length; i++)
+            {
+                lista.AddRange(BitConverter.GetBytes(valores[i]));
+            }
+
+            byte[] data = lista.ToArray();
+
+            double voltage = voltageConfig.multiplier * ((data[1] << 8) + data[0]);
+            double current = currentConfig.multiplier * ((data[3] << 8) + data[2]);
+            double rpm = speedConfig.multiplier * ((data[5] << 8) + data[4]);
+
+            queue_voltage.Enqueue(voltage);
+            queue_current.Enqueue(current);
+            queue_rpm.Enqueue(rpm);
+        }
+
     }
 }

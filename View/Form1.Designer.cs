@@ -30,15 +30,15 @@ namespace IHM_ESP
         private void InitializeComponent()
         {
             this.components = new System.ComponentModel.Container();
-            System.Windows.Forms.DataVisualization.Charting.ChartArea chartArea7 = new System.Windows.Forms.DataVisualization.Charting.ChartArea();
-            System.Windows.Forms.DataVisualization.Charting.Legend legend7 = new System.Windows.Forms.DataVisualization.Charting.Legend();
-            System.Windows.Forms.DataVisualization.Charting.Series series7 = new System.Windows.Forms.DataVisualization.Charting.Series();
-            System.Windows.Forms.DataVisualization.Charting.ChartArea chartArea8 = new System.Windows.Forms.DataVisualization.Charting.ChartArea();
-            System.Windows.Forms.DataVisualization.Charting.Legend legend8 = new System.Windows.Forms.DataVisualization.Charting.Legend();
-            System.Windows.Forms.DataVisualization.Charting.Series series8 = new System.Windows.Forms.DataVisualization.Charting.Series();
-            System.Windows.Forms.DataVisualization.Charting.ChartArea chartArea9 = new System.Windows.Forms.DataVisualization.Charting.ChartArea();
-            System.Windows.Forms.DataVisualization.Charting.Legend legend9 = new System.Windows.Forms.DataVisualization.Charting.Legend();
-            System.Windows.Forms.DataVisualization.Charting.Series series9 = new System.Windows.Forms.DataVisualization.Charting.Series();
+            System.Windows.Forms.DataVisualization.Charting.ChartArea chartArea19 = new System.Windows.Forms.DataVisualization.Charting.ChartArea();
+            System.Windows.Forms.DataVisualization.Charting.Legend legend19 = new System.Windows.Forms.DataVisualization.Charting.Legend();
+            System.Windows.Forms.DataVisualization.Charting.Series series19 = new System.Windows.Forms.DataVisualization.Charting.Series();
+            System.Windows.Forms.DataVisualization.Charting.ChartArea chartArea20 = new System.Windows.Forms.DataVisualization.Charting.ChartArea();
+            System.Windows.Forms.DataVisualization.Charting.Legend legend20 = new System.Windows.Forms.DataVisualization.Charting.Legend();
+            System.Windows.Forms.DataVisualization.Charting.Series series20 = new System.Windows.Forms.DataVisualization.Charting.Series();
+            System.Windows.Forms.DataVisualization.Charting.ChartArea chartArea21 = new System.Windows.Forms.DataVisualization.Charting.ChartArea();
+            System.Windows.Forms.DataVisualization.Charting.Legend legend21 = new System.Windows.Forms.DataVisualization.Charting.Legend();
+            System.Windows.Forms.DataVisualization.Charting.Series series21 = new System.Windows.Forms.DataVisualization.Charting.Series();
             this.tableLayoutPanel1 = new System.Windows.Forms.TableLayoutPanel();
             this.tableLayoutPanel6 = new System.Windows.Forms.TableLayoutPanel();
             this.tableLayoutPanel9 = new System.Windows.Forms.TableLayoutPanel();
@@ -69,8 +69,13 @@ namespace IHM_ESP
             this.tableLayoutPanel2 = new System.Windows.Forms.TableLayoutPanel();
             this.comboBox1 = new System.Windows.Forms.ComboBox();
             this.btn_connect = new System.Windows.Forms.Button();
+            this.lb_text_speed = new System.Windows.Forms.Label();
+            this.lb_text_voltage = new System.Windows.Forms.Label();
+            this.lb_text_current = new System.Windows.Forms.Label();
+            this.lb_instant_rpm = new System.Windows.Forms.Label();
+            this.lb_instant_voltage = new System.Windows.Forms.Label();
+            this.lb_instant_current = new System.Windows.Forms.Label();
             this.timer_update = new System.Windows.Forms.Timer(this.components);
-            this.timer_requestData = new System.Windows.Forms.Timer(this.components);
             this.tableLayoutPanel1.SuspendLayout();
             this.tableLayoutPanel6.SuspendLayout();
             this.tableLayoutPanel9.SuspendLayout();
@@ -167,7 +172,7 @@ namespace IHM_ESP
             this.lb_axisX.Name = "lb_axisX";
             this.lb_axisX.Size = new System.Drawing.Size(234, 23);
             this.lb_axisX.TabIndex = 0;
-            this.lb_axisX.Text = "Intervalo X";
+            this.lb_axisX.Text = "ΔX máx do gráfico";
             this.lb_axisX.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
             // 
             // tableLayoutPanel7
@@ -410,17 +415,17 @@ namespace IHM_ESP
             // 
             // chart_speed
             // 
-            chartArea7.Name = "ChartArea1";
-            this.chart_speed.ChartAreas.Add(chartArea7);
+            chartArea19.Name = "ChartArea1";
+            this.chart_speed.ChartAreas.Add(chartArea19);
             this.chart_speed.Dock = System.Windows.Forms.DockStyle.Fill;
-            legend7.Name = "Legend1";
-            this.chart_speed.Legends.Add(legend7);
+            legend19.Name = "Legend1";
+            this.chart_speed.Legends.Add(legend19);
             this.chart_speed.Location = new System.Drawing.Point(249, 3);
             this.chart_speed.Name = "chart_speed";
-            series7.ChartArea = "ChartArea1";
-            series7.Legend = "Legend1";
-            series7.Name = "Series1";
-            this.chart_speed.Series.Add(series7);
+            series19.ChartArea = "ChartArea1";
+            series19.Legend = "Legend1";
+            series19.Name = "Series1";
+            this.chart_speed.Series.Add(series19);
             this.chart_speed.Size = new System.Drawing.Size(732, 181);
             this.chart_speed.TabIndex = 0;
             this.chart_speed.Text = "chart1";
@@ -430,17 +435,17 @@ namespace IHM_ESP
             // 
             // chart_voltage
             // 
-            chartArea8.Name = "ChartArea1";
-            this.chart_voltage.ChartAreas.Add(chartArea8);
+            chartArea20.Name = "ChartArea1";
+            this.chart_voltage.ChartAreas.Add(chartArea20);
             this.chart_voltage.Dock = System.Windows.Forms.DockStyle.Fill;
-            legend8.Name = "Legend1";
-            this.chart_voltage.Legends.Add(legend8);
+            legend20.Name = "Legend1";
+            this.chart_voltage.Legends.Add(legend20);
             this.chart_voltage.Location = new System.Drawing.Point(249, 190);
             this.chart_voltage.Name = "chart_voltage";
-            series8.ChartArea = "ChartArea1";
-            series8.Legend = "Legend1";
-            series8.Name = "Series1";
-            this.chart_voltage.Series.Add(series8);
+            series20.ChartArea = "ChartArea1";
+            series20.Legend = "Legend1";
+            series20.Name = "Series1";
+            this.chart_voltage.Series.Add(series20);
             this.chart_voltage.Size = new System.Drawing.Size(732, 181);
             this.chart_voltage.TabIndex = 1;
             this.chart_voltage.Text = "chart2";
@@ -449,17 +454,17 @@ namespace IHM_ESP
             // 
             // chart_current
             // 
-            chartArea9.Name = "ChartArea1";
-            this.chart_current.ChartAreas.Add(chartArea9);
+            chartArea21.Name = "ChartArea1";
+            this.chart_current.ChartAreas.Add(chartArea21);
             this.chart_current.Dock = System.Windows.Forms.DockStyle.Fill;
-            legend9.Name = "Legend1";
-            this.chart_current.Legends.Add(legend9);
+            legend21.Name = "Legend1";
+            this.chart_current.Legends.Add(legend21);
             this.chart_current.Location = new System.Drawing.Point(249, 377);
             this.chart_current.Name = "chart_current";
-            series9.ChartArea = "ChartArea1";
-            series9.Legend = "Legend1";
-            series9.Name = "Series1";
-            this.chart_current.Series.Add(series9);
+            series21.ChartArea = "ChartArea1";
+            series21.Legend = "Legend1";
+            series21.Name = "Series1";
+            this.chart_current.Series.Add(series21);
             this.chart_current.Size = new System.Drawing.Size(732, 181);
             this.chart_current.TabIndex = 2;
             this.chart_current.Text = "chart3";
@@ -473,6 +478,12 @@ namespace IHM_ESP
             this.tableLayoutPanel2.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 40F));
             this.tableLayoutPanel2.Controls.Add(this.comboBox1, 0, 0);
             this.tableLayoutPanel2.Controls.Add(this.btn_connect, 1, 0);
+            this.tableLayoutPanel2.Controls.Add(this.lb_text_speed, 0, 2);
+            this.tableLayoutPanel2.Controls.Add(this.lb_text_voltage, 0, 3);
+            this.tableLayoutPanel2.Controls.Add(this.lb_text_current, 0, 4);
+            this.tableLayoutPanel2.Controls.Add(this.lb_instant_rpm, 1, 2);
+            this.tableLayoutPanel2.Controls.Add(this.lb_instant_voltage, 1, 3);
+            this.tableLayoutPanel2.Controls.Add(this.lb_instant_current, 1, 4);
             this.tableLayoutPanel2.Dock = System.Windows.Forms.DockStyle.Fill;
             this.tableLayoutPanel2.Location = new System.Drawing.Point(3, 3);
             this.tableLayoutPanel2.Name = "tableLayoutPanel2";
@@ -505,16 +516,83 @@ namespace IHM_ESP
             this.btn_connect.UseVisualStyleBackColor = true;
             this.btn_connect.Click += new System.EventHandler(this.btn_connect_Click);
             // 
+            // lb_text_speed
+            // 
+            this.lb_text_speed.AutoSize = true;
+            this.lb_text_speed.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.lb_text_speed.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.lb_text_speed.Location = new System.Drawing.Point(3, 72);
+            this.lb_text_speed.Name = "lb_text_speed";
+            this.lb_text_speed.Size = new System.Drawing.Size(138, 36);
+            this.lb_text_speed.TabIndex = 2;
+            this.lb_text_speed.Text = "Velocidade (rpm)";
+            this.lb_text_speed.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
+            // 
+            // lb_text_voltage
+            // 
+            this.lb_text_voltage.AutoSize = true;
+            this.lb_text_voltage.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.lb_text_voltage.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.lb_text_voltage.Location = new System.Drawing.Point(3, 108);
+            this.lb_text_voltage.Name = "lb_text_voltage";
+            this.lb_text_voltage.Size = new System.Drawing.Size(138, 36);
+            this.lb_text_voltage.TabIndex = 3;
+            this.lb_text_voltage.Text = "Tensão (V):";
+            this.lb_text_voltage.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
+            // 
+            // lb_text_current
+            // 
+            this.lb_text_current.AutoSize = true;
+            this.lb_text_current.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.lb_text_current.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.lb_text_current.Location = new System.Drawing.Point(3, 144);
+            this.lb_text_current.Name = "lb_text_current";
+            this.lb_text_current.Size = new System.Drawing.Size(138, 37);
+            this.lb_text_current.TabIndex = 4;
+            this.lb_text_current.Text = "Corrente (A):";
+            this.lb_text_current.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
+            // 
+            // lb_instant_rpm
+            // 
+            this.lb_instant_rpm.AutoSize = true;
+            this.lb_instant_rpm.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.lb_instant_rpm.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.lb_instant_rpm.Location = new System.Drawing.Point(147, 72);
+            this.lb_instant_rpm.Name = "lb_instant_rpm";
+            this.lb_instant_rpm.Size = new System.Drawing.Size(90, 36);
+            this.lb_instant_rpm.TabIndex = 5;
+            this.lb_instant_rpm.Text = "0";
+            this.lb_instant_rpm.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
+            // 
+            // lb_instant_voltage
+            // 
+            this.lb_instant_voltage.AutoSize = true;
+            this.lb_instant_voltage.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.lb_instant_voltage.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.lb_instant_voltage.Location = new System.Drawing.Point(147, 108);
+            this.lb_instant_voltage.Name = "lb_instant_voltage";
+            this.lb_instant_voltage.Size = new System.Drawing.Size(90, 36);
+            this.lb_instant_voltage.TabIndex = 6;
+            this.lb_instant_voltage.Text = "0";
+            this.lb_instant_voltage.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
+            // 
+            // lb_instant_current
+            // 
+            this.lb_instant_current.AutoSize = true;
+            this.lb_instant_current.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.lb_instant_current.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.lb_instant_current.Location = new System.Drawing.Point(147, 144);
+            this.lb_instant_current.Name = "lb_instant_current";
+            this.lb_instant_current.Size = new System.Drawing.Size(90, 37);
+            this.lb_instant_current.TabIndex = 7;
+            this.lb_instant_current.Text = "0";
+            this.lb_instant_current.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
+            // 
             // timer_update
             // 
             this.timer_update.Enabled = true;
             this.timer_update.Interval = 200;
             this.timer_update.Tick += new System.EventHandler(this.timer_update_Tick);
-            // 
-            // timer_requestData
-            // 
-            this.timer_requestData.Interval = 10;
-            this.timer_requestData.Tick += new System.EventHandler(this.timer_requestData_Tick);
             // 
             // Form1
             // 
@@ -544,6 +622,7 @@ namespace IHM_ESP
             ((System.ComponentModel.ISupportInitialize)(this.chart_voltage)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.chart_current)).EndInit();
             this.tableLayoutPanel2.ResumeLayout(false);
+            this.tableLayoutPanel2.PerformLayout();
             this.ResumeLayout(false);
 
         }
@@ -581,7 +660,12 @@ namespace IHM_ESP
         private System.Windows.Forms.Button btn_start;
         private System.Windows.Forms.MaskedTextBox maskedTextBox2;
         private System.Windows.Forms.CheckBox cbox_roll_x;
-        private System.Windows.Forms.Timer timer_requestData;
+        private System.Windows.Forms.Label lb_text_speed;
+        private System.Windows.Forms.Label lb_text_voltage;
+        private System.Windows.Forms.Label lb_text_current;
+        private System.Windows.Forms.Label lb_instant_rpm;
+        private System.Windows.Forms.Label lb_instant_voltage;
+        private System.Windows.Forms.Label lb_instant_current;
     }
 }
 

@@ -1,7 +1,7 @@
 ﻿
 namespace IHM_ESP.View
 {
-    partial class FormChartConfig
+    partial class FormChartSettings
     {
         /// <summary>
         /// Required designer variable.
@@ -129,13 +129,13 @@ namespace IHM_ESP.View
             this.btn_ok.UseVisualStyleBackColor = true;
             this.btn_ok.Click += new System.EventHandler(this.btn_ok_Click);
             // 
-            // FormChartConfig
+            // FormChartSettings
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(344, 201);
             this.Controls.Add(this.tableLayoutPanel1);
-            this.Name = "FormChartConfig";
+            this.Name = "FormChartSettings";
             this.Text = "ChartConfig";
             this.tableLayoutPanel1.ResumeLayout(false);
             this.tableLayoutPanel1.PerformLayout();

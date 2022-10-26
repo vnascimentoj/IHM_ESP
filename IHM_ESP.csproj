@@ -76,11 +76,11 @@
     <Compile Include="Devices\ESP32_USB.cs" />
     <Compile Include="ESPComm.cs" />
     <Compile Include="Modbus.cs" />
-    <Compile Include="View\FormChartConfig.cs">
+    <Compile Include="View\FormChartSettings.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="View\FormChartConfig.Designer.cs">
-      <DependentUpon>FormChartConfig.cs</DependentUpon>
+    <Compile Include="View\FormChartSettings.Designer.cs">
+      <DependentUpon>FormChartSettings.cs</DependentUpon>
     </Compile>
     <Compile Include="View\Form1.cs">
       <SubType>Form</SubType>
@@ -88,13 +88,18 @@
     <Compile Include="View\Form1.Designer.cs">
       <DependentUpon>Form1.cs</DependentUpon>
     </Compile>
-    <Compile Include="IComm.cs" />
     <Compile Include="Message.cs" />
     <Compile Include="Messages.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <EmbeddedResource Include="View\FormChartConfig.resx">
-      <DependentUpon>FormChartConfig.cs</DependentUpon>
+    <Compile Include="View\FormSettings.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="View\FormSettings.Designer.cs">
+      <DependentUpon>FormSettings.cs</DependentUpon>
+    </Compile>
+    <EmbeddedResource Include="View\FormChartSettings.resx">
+      <DependentUpon>FormChartSettings.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="View\Form1.resx">
       <DependentUpon>Form1.cs</DependentUpon>
@@ -108,6 +113,9 @@
       <AutoGen>True</AutoGen>
       <DependentUpon>Resources.resx</DependentUpon>
     </Compile>
+    <EmbeddedResource Include="View\FormSettings.resx">
+      <DependentUpon>FormSettings.cs</DependentUpon>
+    </EmbeddedResource>
     <None Include="packages.config" />
     <None Include="Properties\Settings.settings">
       <Generator>SettingsSingleFileGenerator</Generator>
