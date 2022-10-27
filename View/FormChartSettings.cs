@@ -12,8 +12,8 @@ namespace IHM_ESP.View
 {
     public partial class FormChartSettings : Form
     {
-        ChartConfig config;
-        public FormChartSettings(ChartConfig chartConfig)
+        ChartSettings config;
+        public FormChartSettings(ChartSettings chartConfig)
         {
             InitializeComponent();
             config = chartConfig;

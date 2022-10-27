@@ -30,15 +30,15 @@ namespace IHM_ESP
         private void InitializeComponent()
         {
             this.components = new System.ComponentModel.Container();
-            System.Windows.Forms.DataVisualization.Charting.ChartArea chartArea19 = new System.Windows.Forms.DataVisualization.Charting.ChartArea();
-            System.Windows.Forms.DataVisualization.Charting.Legend legend19 = new System.Windows.Forms.DataVisualization.Charting.Legend();
-            System.Windows.Forms.DataVisualization.Charting.Series series19 = new System.Windows.Forms.DataVisualization.Charting.Series();
-            System.Windows.Forms.DataVisualization.Charting.ChartArea chartArea20 = new System.Windows.Forms.DataVisualization.Charting.ChartArea();
-            System.Windows.Forms.DataVisualization.Charting.Legend legend20 = new System.Windows.Forms.DataVisualization.Charting.Legend();
-            System.Windows.Forms.DataVisualization.Charting.Series series20 = new System.Windows.Forms.DataVisualization.Charting.Series();
-            System.Windows.Forms.DataVisualization.Charting.ChartArea chartArea21 = new System.Windows.Forms.DataVisualization.Charting.ChartArea();
-            System.Windows.Forms.DataVisualization.Charting.Legend legend21 = new System.Windows.Forms.DataVisualization.Charting.Legend();
-            System.Windows.Forms.DataVisualization.Charting.Series series21 = new System.Windows.Forms.DataVisualization.Charting.Series();
+            System.Windows.Forms.DataVisualization.Charting.ChartArea chartArea1 = new System.Windows.Forms.DataVisualization.Charting.ChartArea();
+            System.Windows.Forms.DataVisualization.Charting.Legend legend1 = new System.Windows.Forms.DataVisualization.Charting.Legend();
+            System.Windows.Forms.DataVisualization.Charting.Series series1 = new System.Windows.Forms.DataVisualization.Charting.Series();
+            System.Windows.Forms.DataVisualization.Charting.ChartArea chartArea2 = new System.Windows.Forms.DataVisualization.Charting.ChartArea();
+            System.Windows.Forms.DataVisualization.Charting.Legend legend2 = new System.Windows.Forms.DataVisualization.Charting.Legend();
+            System.Windows.Forms.DataVisualization.Charting.Series series2 = new System.Windows.Forms.DataVisualization.Charting.Series();
+            System.Windows.Forms.DataVisualization.Charting.ChartArea chartArea3 = new System.Windows.Forms.DataVisualization.Charting.ChartArea();
+            System.Windows.Forms.DataVisualization.Charting.Legend legend3 = new System.Windows.Forms.DataVisualization.Charting.Legend();
+            System.Windows.Forms.DataVisualization.Charting.Series series3 = new System.Windows.Forms.DataVisualization.Charting.Series();
             this.tableLayoutPanel1 = new System.Windows.Forms.TableLayoutPanel();
             this.tableLayoutPanel6 = new System.Windows.Forms.TableLayoutPanel();
             this.tableLayoutPanel9 = new System.Windows.Forms.TableLayoutPanel();
@@ -415,17 +415,17 @@ namespace IHM_ESP
             // 
             // chart_speed
             // 
-            chartArea19.Name = "ChartArea1";
-            this.chart_speed.ChartAreas.Add(chartArea19);
+            chartArea1.Name = "ChartArea1";
+            this.chart_speed.ChartAreas.Add(chartArea1);
             this.chart_speed.Dock = System.Windows.Forms.DockStyle.Fill;
-            legend19.Name = "Legend1";
-            this.chart_speed.Legends.Add(legend19);
+            legend1.Name = "Legend1";
+            this.chart_speed.Legends.Add(legend1);
             this.chart_speed.Location = new System.Drawing.Point(249, 3);
             this.chart_speed.Name = "chart_speed";
-            series19.ChartArea = "ChartArea1";
-            series19.Legend = "Legend1";
-            series19.Name = "Series1";
-            this.chart_speed.Series.Add(series19);
+            series1.ChartArea = "ChartArea1";
+            series1.Legend = "Legend1";
+            series1.Name = "Series1";
+            this.chart_speed.Series.Add(series1);
             this.chart_speed.Size = new System.Drawing.Size(732, 181);
             this.chart_speed.TabIndex = 0;
             this.chart_speed.Text = "chart1";
@@ -435,17 +435,17 @@ namespace IHM_ESP
             // 
             // chart_voltage
             // 
-            chartArea20.Name = "ChartArea1";
-            this.chart_voltage.ChartAreas.Add(chartArea20);
+            chartArea2.Name = "ChartArea1";
+            this.chart_voltage.ChartAreas.Add(chartArea2);
             this.chart_voltage.Dock = System.Windows.Forms.DockStyle.Fill;
-            legend20.Name = "Legend1";
-            this.chart_voltage.Legends.Add(legend20);
+            legend2.Name = "Legend1";
+            this.chart_voltage.Legends.Add(legend2);
             this.chart_voltage.Location = new System.Drawing.Point(249, 190);
             this.chart_voltage.Name = "chart_voltage";
-            series20.ChartArea = "ChartArea1";
-            series20.Legend = "Legend1";
-            series20.Name = "Series1";
-            this.chart_voltage.Series.Add(series20);
+            series2.ChartArea = "ChartArea1";
+            series2.Legend = "Legend1";
+            series2.Name = "Series1";
+            this.chart_voltage.Series.Add(series2);
             this.chart_voltage.Size = new System.Drawing.Size(732, 181);
             this.chart_voltage.TabIndex = 1;
             this.chart_voltage.Text = "chart2";
@@ -454,17 +454,17 @@ namespace IHM_ESP
             // 
             // chart_current
             // 
-            chartArea21.Name = "ChartArea1";
-            this.chart_current.ChartAreas.Add(chartArea21);
+            chartArea3.Name = "ChartArea1";
+            this.chart_current.ChartAreas.Add(chartArea3);
             this.chart_current.Dock = System.Windows.Forms.DockStyle.Fill;
-            legend21.Name = "Legend1";
-            this.chart_current.Legends.Add(legend21);
+            legend3.Name = "Legend1";
+            this.chart_current.Legends.Add(legend3);
             this.chart_current.Location = new System.Drawing.Point(249, 377);
             this.chart_current.Name = "chart_current";
-            series21.ChartArea = "ChartArea1";
-            series21.Legend = "Legend1";
-            series21.Name = "Series1";
-            this.chart_current.Series.Add(series21);
+            series3.ChartArea = "ChartArea1";
+            series3.Legend = "Legend1";
+            series3.Name = "Series1";
+            this.chart_current.Series.Add(series3);
             this.chart_current.Size = new System.Drawing.Size(732, 181);
             this.chart_current.TabIndex = 2;
             this.chart_current.Text = "chart3";

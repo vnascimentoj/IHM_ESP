@@ -45,4 +45,15 @@ namespace IHM_ESP.Devices
             DeviceState = 10
         }
     }
+
+    class ESP32RegisterAttribute :Attribute
+    {
+        public ESP32_USB.HoldingRegisters register { get; protected set; }
+        public string Description { get; protected set; }
+        public ESP32RegisterAttribute(string description, ESP32_USB.HoldingRegisters holdingRegister)
+        {
+            register = holdingRegister;
+            Description = description;
+        }
+    }
 }

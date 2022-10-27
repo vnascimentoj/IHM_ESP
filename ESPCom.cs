@@ -297,6 +297,28 @@ namespace IHM_ESP
             return kd;
         }
 
+        public byte[] GetAllHoldingRegisters()
+        {
+            const int header_length = 3;
+            const int crc_length = 2;
+            const int response_length = 25;
+            byte[] data = null;
+            byte[] request = Modbus.BuildSingleMessage(Modbus.Device.ESP_USB,
+                                                       Modbus.DataAccess.READ_HOLDING_REGISTERS,
+                                                       (UInt16)Devices.ESP32_USB.HoldingRegisters.Kp,
+                                                       (UInt16)Devices.ESP32_USB.HoldingRegisters.DeviceState);
+
+            if(SendMessage(request, response_length))
+            {
+                data = new ArraySegment<byte>(response,
+                                              header_length,
+                                              response.Length - crc_length - header_length)
+                                              .ToArray();
+            }
+
+            return data;
+        }
+
         public void Disconnect()
         {
             if (serialPort != null)

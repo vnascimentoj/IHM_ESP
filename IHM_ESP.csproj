@@ -72,9 +72,10 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="ChartConfig.cs" />
+    <Compile Include="ChartSettings.cs" />
+    <Compile Include="ControllerSettings.cs" />
     <Compile Include="Devices\ESP32_USB.cs" />
-    <Compile Include="ESPComm.cs" />
+    <Compile Include="ESPCom.cs" />
     <Compile Include="Modbus.cs" />
     <Compile Include="View\FormChartSettings.cs">
       <SubType>Form</SubType>

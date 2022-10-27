@@ -18,9 +18,12 @@ namespace IHM_ESP
         ESPCom espCom;
         MainMenu mainMenu;
 
-        ChartConfig speedConfig   = new ChartConfig() { multiplier = 1, x_max = 100, x_min = 0, y_max = 2200, y_min = 0 };
-        ChartConfig voltageConfig = new ChartConfig() { multiplier = 1, x_max = 100, x_min = 0, y_max = 250, y_min = 0 };
-        ChartConfig currentConfig = new ChartConfig() { multiplier = 1, x_max = 100, x_min = 0, y_max = 10, y_min = 0 };
+        ChartSettings speedConfig   = new ChartSettings() { multiplier = 1, x_max = 100, x_min = 0, y_max = 2200, y_min = 0 };
+        ChartSettings voltageConfig = new ChartSettings() { multiplier = 1, x_max = 100, x_min = 0, y_max = 250, y_min = 0 };
+        ChartSettings currentConfig = new ChartSettings() { multiplier = 1, x_max = 100, x_min = 0, y_max = 10, y_min = 0 };
+
+        ControllerSettings controllerSettings = new ControllerSettings();
+
         int roll_x = 100;
         public Form1()
         {
@@ -44,17 +47,25 @@ namespace IHM_ESP
         {
             mainMenu = new MainMenu();
             MenuItem File = mainMenu.MenuItems.Add("&Arquivo");
-            //File.MenuItems.Add(new MenuItem("&Exportar gráficos"));
             MenuItem exportCsv = new MenuItem("&Exportar .csv");
             exportCsv.Click += ExportCsv_Click;
             File.MenuItems.Add(exportCsv);
-            
-            //this.Menu = mainMenu;
 
             MenuItem settings = mainMenu.MenuItems.Add("&Ajustes");
-            settings.MenuItems.Add(new MenuItem("&Ajustes PID"));
+            settings.Click += Settings_Click;
             this.Menu = mainMenu;
-            
+        }
+
+        private void Settings_Click(object sender, EventArgs e)
+        {
+            if (espCom == null)
+                MessageBox.Show("É preciso conectar com o controlador para utilizar essa funcionalidade");
+            else
+            {
+                controllerSettings.FillFromBytes(espCom.GetAllHoldingRegisters());
+                View.FormSettings form = new View.FormSettings(controllerSettings);
+                form.ShowDialog();
+            }
         }
 
         public class Record
@@ -222,17 +233,18 @@ namespace IHM_ESP
         private Random random = new Random();
         private void timer_update_Tick(object sender, EventArgs e)
         {
-            chart_current.Series.ResumeUpdates();
-            chart_voltage.Series.ResumeUpdates();
-            chart_speed.Series.ResumeUpdates();
+            //chart_current.Series.ResumeUpdates();
+            //chart_voltage.Series.ResumeUpdates();
+            //chart_speed.Series.ResumeUpdates();
 
             fill_series(chart_speed.Series["Velocidade"], queue_rpm);
             fill_series(chart_voltage.Series["Tensão"], queue_voltage);
             fill_series(chart_current.Series["Corrente"], queue_current);
             chart_roll();
-            chart_current.Series.SuspendUpdates();
-            chart_voltage.Series.SuspendUpdates();
-            chart_speed.Series.SuspendUpdates();
+
+            //chart_current.Series.SuspendUpdates();
+            //chart_voltage.Series.SuspendUpdates();
+            //chart_speed.Series.SuspendUpdates();
         }
 
         private void fill_series(Series series, ConcurrentQueue<double> queue)
@@ -402,7 +414,7 @@ namespace IHM_ESP
             chart_update(chart_current, currentConfig);
         }
         #endregion
-        private void chart_update(System.Windows.Forms.DataVisualization.Charting.Chart chart, ChartConfig config)
+        private void chart_update(System.Windows.Forms.DataVisualization.Charting.Chart chart, ChartSettings config)
         {   
             chart.ChartAreas[0].AxisY.Minimum = config.y_min;
             chart.ChartAreas[0].AxisY.Maximum = config.y_max;

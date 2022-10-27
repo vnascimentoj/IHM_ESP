@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace IHM_ESP
 {
-    public class ChartConfig
+    public class ChartSettings
     {
         public double y_max { get; set; }
         public double y_min { get; set; }
