@@ -145,7 +145,6 @@ namespace IHM_ESP
             chart_speed.ChartAreas[0].AxisY.Title = "RPM";
             chart_speed.Series.Clear();
             chart_speed.Series.Add("Velocidade");
-            chart_speed.Series["Velocidade"].Points.AddY(new Random().Next(2100) + 100);
             chart_speed.Series["Velocidade"].ChartType = System.Windows.Forms.DataVisualization.Charting.SeriesChartType.Line;
 
             //Ajustes do gráfico de tensão de armadura

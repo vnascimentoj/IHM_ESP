@@ -6,6 +6,7 @@ using System.Drawing;
 using System.Linq;
 using System.Reflection;
 using System.Text;
+using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 
@@ -33,6 +34,29 @@ namespace IHM_ESP.View
                     listViewItem.SubItems.Add(prop.GetValue(controllerSettings).ToString());
                     listViewItem.Tag = prop;
                     listView_settings.Items.Add(listViewItem);
+                }
+            }
+        }
+
+        private void listView_settings_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            if(listView_settings.SelectedItems.Count > 0)
+            {
+                PropertyInfo property = listView_settings.SelectedItems[0].Tag as PropertyInfo;
+                tb_value.Text = property.GetValue(controllerSettings).ToString();
+            }
+        }
+
+        private void tb_value_Validating(object sender, CancelEventArgs e)
+        {
+            Regex regex = new Regex(@"^[0-9]+$");
+            if (regex.IsMatch(tb_value.Text))
+            {
+                if (listView_settings.SelectedItems.Count > 0)
+                {
+                    PropertyInfo property = listView_settings.SelectedItems[0].Tag as PropertyInfo;
+                    property.SetValue(controllerSettings, Convert.ToUInt16(tb_value.Text));
+                    listView_settings.SelectedItems[0].SubItems[1].Text = tb_value.Text;
                 }
             }
         }

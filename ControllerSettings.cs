@@ -44,13 +44,13 @@ namespace IHM_ESP
         {
             const int register_index_offset = 1;
 
-            foreach(FieldInfo field in GetType().GetFields())
+            foreach(PropertyInfo info in GetType().GetProperties())
             {
-                ESP32RegisterAttribute attr = field.GetCustomAttribute<ESP32RegisterAttribute>();
+                ESP32RegisterAttribute attr = info.GetCustomAttribute<ESP32RegisterAttribute>();
                 
                 int i = ((int)attr.register - register_index_offset) * sizeof(UInt16);
                 UInt16 value = (UInt16)((data[i] << 8) + data[i + 1]);
-                field.SetValue(this, value);
+                info.SetValue(this, value);
             }
             
         }
