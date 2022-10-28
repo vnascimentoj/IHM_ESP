@@ -13,7 +13,7 @@ using System.Windows.Forms.DataVisualization.Charting;
 
 namespace IHM_ESP
 {
-    public partial class Form1 : Form
+    public partial class MainForm : Form
     {
         ESPCom espCom;
         MainMenu mainMenu;
@@ -25,7 +25,7 @@ namespace IHM_ESP
         ControllerSettings controllerSettings = new ControllerSettings();
 
         int roll_x = 100;
-        public Form1()
+        public MainForm()
         {
             InitializeComponent();
             InitializeCharts();
@@ -36,6 +36,7 @@ namespace IHM_ESP
 
             btn_set_pwm.Enabled = false;
             btn_set_speed.Enabled = false;
+            this.Text = "Interface com o controlador";
         }
 
         private void ComboBox1_Click(object sender, EventArgs e)
@@ -62,9 +63,20 @@ namespace IHM_ESP
                 MessageBox.Show("É preciso conectar com o controlador para utilizar essa funcionalidade");
             else
             {
-                controllerSettings.FillFromBytes(espCom.GetAllHoldingRegisters());
+                byte[] registersData = espCom.GetAllHoldingRegisters();
+                controllerSettings.FillFromBytes(registersData);
                 View.FormSettings form = new View.FormSettings(controllerSettings);
                 form.ShowDialog();
+                if(form.SettingsChanged)
+                {
+                    DialogResult result = MessageBox.Show("Confirmar alterações?", "Confirmar", MessageBoxButtons.YesNo, MessageBoxIcon.Question);
+                    if(result == DialogResult.Yes)
+                    {
+                        bool success = espCom.SetAllHoldingRegisters(controllerSettings.ConvertToBytes());
+                        if(!success)
+                            MessageBox.Show("Erro ao gravar configurações", "Erro" , MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    }
+                }
             }
         }
 
@@ -239,18 +251,36 @@ namespace IHM_ESP
             fill_series(chart_speed.Series["Velocidade"], queue_rpm);
             fill_series(chart_voltage.Series["Tensão"], queue_voltage);
             fill_series(chart_current.Series["Corrente"], queue_current);
+
             chart_roll();
+            try
+            {
+                lb_instant_rpm.Text = chart_speed.Series["Velocidade"].Points.Last().YValues[0].ToString();
+                lb_instant_voltage.Text = chart_voltage.Series["Tensão"].Points.Last().YValues[0].ToString();
+                lb_instant_current.Text = chart_current.Series["Corrente"].Points.Last().YValues[0].ToString();
+            }
+            catch(Exception ex)
+            {
+                
+            }
+            
 
             //chart_current.Series.SuspendUpdates();
             //chart_voltage.Series.SuspendUpdates();
             //chart_speed.Series.SuspendUpdates();
         }
 
+        /// <summary>
+        /// Insere os valores de "queue" em "series".
+        /// </summary>
+        /// <param name="series">Série que será preenchida com os valores provenientes da fila.</param>
+        /// <param name="queue">Fila com os valores utilizados para preencher a série.</param>
         private void fill_series(Series series, ConcurrentQueue<double> queue)
         {
             double result = 0;
             while (queue.TryDequeue(out result))
                 series.Points.AddXY(series.Points.Count, result);
+
         }
 
         private void chart_roll()
@@ -293,13 +323,7 @@ namespace IHM_ESP
                         var pointYPixel = result.ChartArea.AxisY.ValueToPixelPosition(prop.YValues[0]);
                         tooltip.Show("X=" + prop.XValue + ", Y=" + prop.YValues[0], this.chart_speed,
                                             pos.X, pos.Y - 15);
-                        // check if the cursor is really close to the point (2 pixels around the point)
-                        //if (Math.Abs(pos.X - pointXPixel) < 2 &&
-                        //    Math.Abs(pos.Y - pointYPixel) < 2)
-                        //{
-                        //    tooltip.Show("X=" + prop.XValue + ", Y=" + prop.YValues[0], this.chart_speed,
-                        //                    pos.X, pos.Y - 15);
-                        //}
+                        
                     }
                 }
             }
@@ -470,13 +494,13 @@ namespace IHM_ESP
                     queue_current.Enqueue(current);
                     queue_rpm.Enqueue(rpm);
 
-                    //messageError = false;
+                    messageError = false;
                 }
-                //else if(!messageError)
-                //{
-                //    MessageBox.Show("Mensagem de leitura nula");
-                //    messageError = true;
-                //}
+                else if (!messageError)
+                {
+                    MessageBox.Show("Erro ao requisitar mensagem de dados.", "Erro", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    messageError = true;
+                }
                 //simulaGrafico();
                 while (stopwatch.ElapsedMilliseconds < 10) ;
                 stopwatch.Restart();

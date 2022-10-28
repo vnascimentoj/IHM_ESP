@@ -101,7 +101,7 @@ namespace IHM_ESP
             {
                 serialPort.Write(message, 0, message.Length);
 
-                if (!SpinWait.SpinUntil(() => serialPort.BytesToRead >= responseLength, 50))
+                if (!SpinWait.SpinUntil(() => serialPort.BytesToRead >= responseLength, 150))
                 {
                     response = Modbus.GetResponse(serialPort, serialPort.BytesToRead);
                     //serialPort.DiscardInBuffer();
@@ -181,7 +181,7 @@ namespace IHM_ESP
         }
 
 
-        public void SetP(double kp)
+        public void SetP(int kp)
         {
             byte[] message = Modbus.BuildSingleMessage(Modbus.Device.ESP_USB,
                                                        Modbus.DataAccess.WRITE_SINGLE_REGISTER,
@@ -191,7 +191,7 @@ namespace IHM_ESP
             SendMessage(message, message.Length);
         }
 
-        public void SetI(double ki)
+        public void SetI(int ki)
         {
             byte[] message = Modbus.BuildSingleMessage(Modbus.Device.ESP_USB,
                                                        Modbus.DataAccess.WRITE_SINGLE_REGISTER,
@@ -201,7 +201,7 @@ namespace IHM_ESP
             SendMessage(message, message.Length);
         }
 
-        public void SetD(double kd)
+        public void SetD(int kd)
         {
             byte[] message = Modbus.BuildSingleMessage(Modbus.Device.ESP_USB,
                                                        Modbus.DataAccess.WRITE_SINGLE_REGISTER,
@@ -317,6 +317,19 @@ namespace IHM_ESP
             }
 
             return data;
+        }
+
+        public bool SetAllHoldingRegisters(byte[] data)
+        {   
+            const int response_length = 8;
+            byte[] request = Modbus.BuildWriteMultipleRegistersMessage(Modbus.Device.ESP_USB,
+                                                                       Modbus.DataAccess.WRITE_MULTIPLE_REGISTERS,
+                                                                       (UInt16)Devices.ESP32_USB.HoldingRegisters.Kp,
+                                                                       (UInt16)(data.Length / 2),
+                                                                       (byte)data.Length,
+                                                                       data);
+
+            return SendMessage(request, response_length);
         }
 
         public void Disconnect()

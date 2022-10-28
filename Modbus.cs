@@ -86,6 +86,30 @@ namespace IHM_ESP
             return message;
         }
 
+        public static byte[] BuildWriteMultipleRegistersMessage(Device device, DataAccess fnCode, UInt16 startingAddress, 
+                                                                UInt16 numberOfRegisters, byte numberOfDataBytes, byte[] data)
+        {
+            const int offset = 7;
+            byte[] message = new byte[numberOfDataBytes + 9];
+
+            message[0] = (byte)device;
+            message[1] = (byte)fnCode;
+            message[2] = (byte)(startingAddress >> 8);
+            message[3] = (byte)startingAddress;
+            message[4] = (byte)(numberOfRegisters >> 8);
+            message[5] = (byte)numberOfRegisters;
+            message[6] = numberOfDataBytes;
+
+            for (int i = 0; i < numberOfDataBytes; i++)
+                message[i + offset] = data[i];
+
+            byte[] crc = GetCRC(message);
+            message[offset + numberOfDataBytes] = crc[0];
+            message[offset + numberOfDataBytes + 1] = crc[1];
+
+            return message;
+        }
+
         public static byte[] GetResponse(SerialPort stream, int length)
         {
             byte[] response = new byte[length];

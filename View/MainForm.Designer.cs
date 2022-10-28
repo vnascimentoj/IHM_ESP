@@ -1,7 +1,7 @@
 ﻿
 namespace IHM_ESP
 {
-    partial class Form1
+    partial class MainForm
     {
         /// <summary>
         /// Variável de designer necessária.
@@ -594,13 +594,13 @@ namespace IHM_ESP
             this.timer_update.Interval = 200;
             this.timer_update.Tick += new System.EventHandler(this.timer_update_Tick);
             // 
-            // Form1
+            // MainForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(984, 561);
             this.Controls.Add(this.tableLayoutPanel1);
-            this.Name = "Form1";
+            this.Name = "MainForm";
             this.Text = "Form1";
             this.tableLayoutPanel1.ResumeLayout(false);
             this.tableLayoutPanel6.ResumeLayout(false);

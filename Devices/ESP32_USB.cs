@@ -48,11 +48,14 @@ namespace IHM_ESP.Devices
 
     class ESP32RegisterAttribute :Attribute
     {
-        public ESP32_USB.HoldingRegisters register { get; protected set; }
+        public ESP32_USB.HoldingRegisters Register { get; protected set; }
         public string Description { get; protected set; }
+        public UInt16 MinValue { get; set; }
+        public UInt16 MaxValue { get; set; }
+        public string UnitOfMeasurement { get; set; }
         public ESP32RegisterAttribute(string description, ESP32_USB.HoldingRegisters holdingRegister)
         {
-            register = holdingRegister;
+            Register = holdingRegister;
             Description = description;
         }
     }
