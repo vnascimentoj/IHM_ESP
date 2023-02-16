@@ -31,7 +31,8 @@ namespace IHM_ESP
             serialPort = new SerialPort(comPort, baudRate);
 
             serialPort.Open();
-            messageIntervalInTicks = Convert.ToInt32(3.5 * Stopwatch.Frequency / baudRate);
+            //messageIntervalInTicks = Convert.ToInt32(10 * 3.5 * Stopwatch.Frequency / baudRate); // 10 bits * 3.5 characters 
+            messageIntervalInTicks = Convert.ToInt32(0.0015 * Stopwatch.Frequency); // 1.5 ms
 
         }     
 
@@ -97,22 +98,33 @@ namespace IHM_ESP
         protected bool SendMessage(byte[] message, int responseLength)
         {
             bool success = false;
-            if(serialPort.IsOpen)
+            bool lockTaken = false;
+            try
             {
-                serialPort.Write(message, 0, message.Length);
-
-                if (!SpinWait.SpinUntil(() => serialPort.BytesToRead >= responseLength, 150))
+                Monitor.TryEnter(serialPort, 150, ref lockTaken);
+                if (serialPort.IsOpen)
                 {
-                    response = Modbus.GetResponse(serialPort, serialPort.BytesToRead);
-                    //serialPort.DiscardInBuffer();
-                }   
-                else
-                {
-                    response = Modbus.GetResponse(serialPort, responseLength);
+                    serialPort.Write(message, 0, message.Length);
 
-                    success = Modbus.CheckResponse(response);
+                    if (!SpinWait.SpinUntil(() => serialPort.BytesToRead >= responseLength, 150))
+                    {
+                        response = Modbus.GetResponse(serialPort, serialPort.BytesToRead);
+                        //serialPort.DiscardInBuffer();
+                    }
+                    else
+                    {
+                        response = Modbus.GetResponse(serialPort, responseLength);
+                        success = Modbus.CheckResponse(response);
+                    }
                 }
             }
+            finally
+            {
+                if (lockTaken)
+                    Monitor.Exit(serialPort);
+            }
+            
+            
 
             // Aguarda o intervalo mínimo entre mensagens (tempo de 3.5 caracteres)
             Stopwatch sw = Stopwatch.StartNew();
@@ -210,7 +222,6 @@ namespace IHM_ESP
 
             SendMessage(message, message.Length);
         }
-
 
         public double GetCurrent()
         {

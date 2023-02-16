@@ -9,7 +9,7 @@ using System.Threading.Tasks;
 namespace IHM_ESP
 {   
     public static class Modbus
-    {
+    {       
         public enum Device : byte
         {
             ESP_USB = 0x01

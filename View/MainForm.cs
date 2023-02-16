@@ -484,11 +484,15 @@ namespace IHM_ESP
             {   
                 byte[] data = espCom.RequestData();
                 
+                double voltage = 0;
+                double current = 0;
+                double rpm = 0;
+
                 if (data != null)
                 {   
-                    double voltage = voltageConfig.multiplier * ((data[0] << 8) + data[1]);
-                    double current = currentConfig.multiplier * ((data[2] << 8) + data[3]);
-                    double rpm     = speedConfig.multiplier   * ((data[4] << 8) + data[5]);
+                    voltage = voltageConfig.multiplier * ((data[0] << 8) + data[1]);
+                    current = currentConfig.multiplier * ((data[2] << 8) + data[3]);
+                    rpm     = speedConfig.multiplier   * ((data[4] << 8) + data[5]);
 
                     queue_voltage.Enqueue(voltage);
                     queue_current.Enqueue(current);
@@ -496,12 +500,17 @@ namespace IHM_ESP
 
                     messageError = false;
                 }
-                else if (!messageError)
-                {
-                    MessageBox.Show("Erro ao requisitar mensagem de dados.", "Erro", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                    messageError = true;
-                }
+                //else if (!messageError)
+                //{
+                //    MessageBox.Show("Erro ao requisitar mensagem de dados.", "Erro", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                //    messageError = true;
+                //}
                 //simulaGrafico();
+
+                queue_voltage.Enqueue(voltage);
+                queue_current.Enqueue(current);
+                queue_rpm.Enqueue(rpm);
+
                 while (stopwatch.ElapsedMilliseconds < 10) ;
                 stopwatch.Restart();
             }
