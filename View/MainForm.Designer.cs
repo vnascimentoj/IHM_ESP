@@ -50,7 +50,7 @@ namespace IHM_ESP
             this.label3 = new System.Windows.Forms.Label();
             this.tableLayoutPanel8 = new System.Windows.Forms.TableLayoutPanel();
             this.maskedTextBox2 = new System.Windows.Forms.MaskedTextBox();
-            this.button2 = new System.Windows.Forms.Button();
+            this.btn_clear = new System.Windows.Forms.Button();
             this.cbox_roll_x = new System.Windows.Forms.CheckBox();
             this.tableLayoutPanel3 = new System.Windows.Forms.TableLayoutPanel();
             this.lb_speed = new System.Windows.Forms.Label();
@@ -229,7 +229,7 @@ namespace IHM_ESP
             this.tableLayoutPanel8.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 60F));
             this.tableLayoutPanel8.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 40F));
             this.tableLayoutPanel8.Controls.Add(this.maskedTextBox2, 0, 0);
-            this.tableLayoutPanel8.Controls.Add(this.button2, 1, 0);
+            this.tableLayoutPanel8.Controls.Add(this.btn_clear, 1, 0);
             this.tableLayoutPanel8.Dock = System.Windows.Forms.DockStyle.Fill;
             this.tableLayoutPanel8.Location = new System.Drawing.Point(3, 115);
             this.tableLayoutPanel8.Name = "tableLayoutPanel8";
@@ -248,16 +248,16 @@ namespace IHM_ESP
             this.maskedTextBox2.TabIndex = 0;
             this.maskedTextBox2.Visible = false;
             // 
-            // button2
+            // btn_clear
             // 
-            this.button2.Dock = System.Windows.Forms.DockStyle.Top;
-            this.button2.Location = new System.Drawing.Point(143, 3);
-            this.button2.Name = "button2";
-            this.button2.Size = new System.Drawing.Size(88, 23);
-            this.button2.TabIndex = 1;
-            this.button2.Text = "Aplicar";
-            this.button2.UseVisualStyleBackColor = true;
-            this.button2.Visible = false;
+            this.btn_clear.Dock = System.Windows.Forms.DockStyle.Top;
+            this.btn_clear.Location = new System.Drawing.Point(143, 3);
+            this.btn_clear.Name = "btn_clear";
+            this.btn_clear.Size = new System.Drawing.Size(88, 23);
+            this.btn_clear.TabIndex = 1;
+            this.btn_clear.Text = "Limpar dados";
+            this.btn_clear.UseVisualStyleBackColor = true;
+            this.btn_clear.Click += new System.EventHandler(this.btn_clear_Click);
             // 
             // cbox_roll_x
             // 
@@ -655,7 +655,7 @@ namespace IHM_ESP
         private System.Windows.Forms.Button btn_set_roll;
         private System.Windows.Forms.Label label3;
         private System.Windows.Forms.TableLayoutPanel tableLayoutPanel8;
-        private System.Windows.Forms.Button button2;
+        private System.Windows.Forms.Button btn_clear;
         private System.Windows.Forms.TableLayoutPanel tableLayoutPanel9;
         private System.Windows.Forms.Button btn_start;
         private System.Windows.Forms.MaskedTextBox maskedTextBox2;

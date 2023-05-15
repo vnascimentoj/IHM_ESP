@@ -244,10 +244,6 @@ namespace IHM_ESP
         private Random random = new Random();
         private void timer_update_Tick(object sender, EventArgs e)
         {
-            //chart_current.Series.ResumeUpdates();
-            //chart_voltage.Series.ResumeUpdates();
-            //chart_speed.Series.ResumeUpdates();
-
             fill_series(chart_speed.Series["Velocidade"], queue_rpm);
             fill_series(chart_voltage.Series["Tensão"], queue_voltage);
             fill_series(chart_current.Series["Corrente"], queue_current);
@@ -265,9 +261,6 @@ namespace IHM_ESP
             }
             
 
-            //chart_current.Series.SuspendUpdates();
-            //chart_voltage.Series.SuspendUpdates();
-            //chart_speed.Series.SuspendUpdates();
         }
 
         /// <summary>
@@ -499,13 +492,7 @@ namespace IHM_ESP
                     queue_rpm.Enqueue(rpm);
 
                     messageError = false;
-                }
-                //else if (!messageError)
-                //{
-                //    MessageBox.Show("Erro ao requisitar mensagem de dados.", "Erro", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                //    messageError = true;
-                //}
-                //simulaGrafico();
+                }                
 
                 queue_voltage.Enqueue(voltage);
                 queue_current.Enqueue(current);
@@ -538,5 +525,11 @@ namespace IHM_ESP
             queue_rpm.Enqueue(rpm);
         }
 
+        private void btn_clear_Click(object sender, EventArgs e)
+        {
+            chart_speed.Series["Velocidade"].Points.Clear();
+            chart_voltage.Series["Tensão"].Points.Clear();
+            chart_current.Series["Corrente"].Points.Clear();
+        }
     }
 }
